@@ -10,6 +10,7 @@ return [
     'field-edit' => 'Edit',
     'field-value' => 'Field value',
     'settings-multistring' => 'Multistring',
+    'settings-rows' => 'Number of lines',
     'main-attributes-header' => 'Edit field main attributes',
     'save' => 'Save',
     'apply' => 'Apply',

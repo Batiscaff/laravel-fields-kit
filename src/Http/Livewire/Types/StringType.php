@@ -16,7 +16,7 @@ class StringType extends Component
 
     public string $value = '';
 
-    protected $listeners = ['refreshComponent' => '$refresh'];
+    protected $listeners = ['save', 'refreshComponent' => '$refresh'];
 
     /**
      * @param PeculiarField $currentField
@@ -37,10 +37,9 @@ class StringType extends Component
     }
 
     /**
-     * @param bool|null $isBackward
      * @return void
      */
-    public function save(?bool $isBackward = false): void
+    public function save(): void
     {
         $this->currentField->setValue($this->value);
     }

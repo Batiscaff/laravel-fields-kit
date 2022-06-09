@@ -2,11 +2,11 @@
     <div class="card card-secondary">
         @if(empty($model) || !$model->exists)
             <div class="overlay dark">
-                <h5 class="text-light">{{ __('Custom fields will become available after saving the model.') }}</h5>
+                <h5 class="text-light">{{ __('fields-kit::section.will-become') }}</h5>
             </div>
         @endif
         <div class="card-header">
-            {{ __('Custom fields') }}
+            {{ __('fields-kit::section.custom-fields') }}
         </div>
         <div class="card-body p-0">
 
@@ -19,9 +19,9 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>{{ __('Name') }}</th>
-                        <th>{{ __('Title') }}</th>
-                        <th>{{ __('Type') }}</th>
+                        <th>{{ __('fields-kit::section.name') }}</th>
+                        <th>{{ __('fields-kit::section.title') }}</th>
+                        <th>{{ __('fields-kit::section.type') }}</th>
                         <th style="width: 2%"></th>
                     </tr>
                 </thead>
@@ -39,11 +39,11 @@
                             <a class="btn btn-info btn-sm"
                                href="{{ route('fields-kit.peculiar-field-edit', ['currentField' => $field->id], false) }}">
                                 <span class="fas fa-pencil-alt"></span>
-                                {{ __('Edit') }}
+                                {{ __('fields-kit::section.edit') }}
                             </a>
                             <button wire:click="pfAskToDelete({{ $field->id }})" class="btn btn-danger btn-sm">
                                 <span class="fas fa-trash"></span>
-                                {{ __('Delete') }}
+                                {{ __('fields-kit::section.delete') }}
                             </button>
                         </td>
                     </tr>
@@ -54,18 +54,18 @@
         <div class="card-footer border-top">
             <button type="button" class="btn btn-success ml-3 mt-2" wire:click="pfAddFieldModal">
                 <span class="fas fa-plus"></span>
-                {{ __('Add') }}
+                {{ __('fields-kit::section.add') }}
             </button>
         </div>
     </div>
 
     <x-jet-dialog-modal wire:model="pfIsAddModalOpen">
         <x-slot name="title">
-            {{ __('Add field') }}
+            {{ __('fields-kit::section.add-field') }}
         </x-slot>
         <x-slot name="content">
             <div class="field-group">
-                <label for="new-field-type-input">{{ __('Select field type') }}</label>
+                <label for="new-field-type-input">{{ __('fields-kit::section.select-field-type') }}</label>
                 <select class="form-control select2  @error('newFieldType') is-invalid @enderror"
                         id="new-type-input"
                         wire:model.defer="newFieldType">
@@ -79,7 +79,7 @@
                 @enderror
             </div>
             <div class="field-group">
-                <label for="new-field-name-input">{{ __('Name') }}</label>
+                <label for="new-field-name-input">{{ __('fields-kit::section.name') }}</label>
                 <input type="text"
                        class="form-control @error('newFieldName') is-invalid @enderror"
                        wire:model="newFieldName">
@@ -88,7 +88,7 @@
                 @enderror
             </div>
             <div class="field-group">
-                <label for="new-field-title-input">{{ __('Title') }}</label>
+                <label for="new-field-title-input">{{ __('fields-kit::section.title') }}</label>
                 <input type="text"
                        class="form-control @error('newFieldTitle') is-invalid @enderror"
                        wire:model="newFieldTitle">
@@ -99,27 +99,27 @@
         </x-slot>
         <x-slot name="footer">
             <button class="btn btn-success" class="ml-2" wire:click="pfAddField" wire:loading.attr="disabled">
-                {{ __('Add') }}
+                {{ __('fields-kit::section.add') }}
             </button>
-            <button class="btn btn-secondary" class="ml-2" data-dismiss="modal" aria-label="{{ __('Cancel') }}">
-                {{ __('Cancel') }}
+            <button class="btn btn-secondary" class="ml-2" data-dismiss="modal" aria-label="{{ __('fields-kit::section.cancel') }}">
+                {{ __('fields-kit::section.cancel') }}
             </button>
         </x-slot>
     </x-jet-dialog-modal>
 
     <x-jet-dialog-modal wire:model="pfIsDeleteConfirmModalOpen">
         <x-slot name="title">
-            {{ __('Delete item') }}
+            {{ __('fields-kit::section.delete-item') }}
         </x-slot>
         <x-slot name="content">
-            <p>{{ __('Are you sure you want to delete this item?') }}</p>
+            <p>{{ __('fields-kit::section.want-to-delete') }}</p>
         </x-slot>
         <x-slot name="footer">
             <button class="btn btn-danger" class="ml-2" wire:click="pfDelete" wire:loading.attr="disabled">
-                {{ __('Delete') }}
+                {{ __('fields-kit::section.delete') }}
             </button>
-            <button class="btn btn-secondary" class="ml-2" data-dismiss="modal" aria-label="{{ __('Cancel') }}">
-                {{ __('Cancel') }}
+            <button class="btn btn-secondary" class="ml-2" data-dismiss="modal" aria-label="{{ __('fields-kit::section.cancel') }}">
+                {{ __('fields-kit::section.cancel') }}
             </button>
         </x-slot>
     </x-jet-dialog-modal>

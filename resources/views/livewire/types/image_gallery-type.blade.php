@@ -79,18 +79,6 @@
                 <progress max="100" x-bind:value="progress"></progress>
             </div>
         </div>
-
-    </div>
-    <div class="card-footer">
-        <button class="btn btn-lg btn-success" wire:click="save(true)" wire:loading.attr="disabled">
-            {{ __('fields-kit::edit.save') }}
-        </button>
-        <button class="btn btn-lg btn-info" name="apply" wire:click="save()" wire:loading.attr="disabled">
-            {{ __('fields-kit::edit.apply') }}
-        </button>
-        <a href="{{ $cancelLink ?? '.' }}" class="btn btn-lg btn-secondary" wire:loading.attr="disabled">
-            {{ __('fields-kit::edit.cancel') }}
-        </a>
     </div>
 </div>
 

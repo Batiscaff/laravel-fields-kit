@@ -4,6 +4,7 @@ namespace Batiscaff\FieldsKit\Models;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField as PeculiarFieldContract;
 use Batiscaff\FieldsKit\Exceptions\FieldTypeNotFound;
+use Batiscaff\FieldsKit\Traits\HasPeculiarFields;
 use Batiscaff\FieldsKit\Types\AbstractType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
@@ -72,13 +73,29 @@ class PeculiarField extends Model implements PeculiarFieldContract
         }
     }
 
-    public function getValue()
+    /**
+     * @return mixed
+     */
+    public function getValue(): mixed
     {
         return $this->typeInstance->getValue();
     }
 
-    public function setValue($value)
+    /**
+     * @param mixed $value
+     * @return void
+     */
+    public function setValue(mixed $value): void
     {
         $this->typeInstance->setValue($value);
+    }
+
+    /**
+     * @return string
+     */
+    public function backwardLink(): string
+    {
+        $model = $this->model;
+        return method_exists($model, 'backwardLink') ? $model->backwardLink() : '';
     }
 }

@@ -25,9 +25,7 @@
                 <div class="icon">
                     <i class="fas fa-layer-group"></i>
                 </div>
-                <a class="small-box-footer"
-                   href="#"
-                   wire:click.prevent="editField()">
+                <a class="small-box-footer" href="#" wire:click.prevent="editField()">
                     {{ __('fields-kit::edit.field-edit') }} <i class="fas fa-edit"></i>
                 </a>
             </div>
@@ -36,6 +34,19 @@
     <div class="row">
         <div class="col-12">
             @livewire($this->livewireComponent, ['currentField' => $this->currentField])
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 pb-3">
+            <button class="btn btn-lg btn-success" wire:click="saveData(true)" wire:loading.attr="disabled">
+                {{ __('fields-kit::edit.save') }}
+            </button>
+            <button class="btn btn-lg btn-info" name="apply" wire:click="saveData()" wire:loading.attr="disabled">
+                {{ __('fields-kit::edit.apply') }}
+            </button>
+            <a href="{{ $this->currentField->backwardLink() ?: '.' }}" class="btn btn-lg btn-secondary" wire:loading.attr="disabled">
+                {{ __('fields-kit::edit.cancel') }}
+            </a>
         </div>
     </div>
 

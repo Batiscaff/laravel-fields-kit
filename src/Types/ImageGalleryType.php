@@ -41,7 +41,7 @@ class ImageGalleryType extends AbstractType
         $data = $this->peculiarField->data ?? [];
         $cnt = max(count($data), count($value));
 
-        $hash       = md5('peculiarFields' . $this->peculiarField->id);
+        $hash = md5('peculiarFields' . $this->peculiarField->id);
 
         for ($i=0; $i < $cnt; $i++) {
             if (!isset($value[$i]) || self::isEmptyImagesList($value[$i])) {

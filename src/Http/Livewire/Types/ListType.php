@@ -19,7 +19,7 @@ class ListType extends Component
     public string $columns = '[]';
     public Collection $settings;
 
-    protected $listeners = ['reRenderFieldData', 'itemsIsSorted'];
+    protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted'];
 
     /**
      * @param PeculiarField $currentField
@@ -42,10 +42,9 @@ class ListType extends Component
     }
 
     /**
-     * @param bool|null $isBackward
      * @return void
      */
-    public function save(?bool $isBackward = false): void
+    public function save(): void
     {
         $this->currentField->setValue($this->value);
     }

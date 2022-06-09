@@ -95,4 +95,19 @@ class LivewirePeculiarFieldEdit extends Component
         $this->emit('reRenderFieldData');
     }
 
+    /**
+     * @param bool|null $isBackward
+     * @return void
+     */
+    public function saveData(?bool $isBackward = false): void
+    {
+        $this->emitTo($this->getLivewireComponentProperty(), 'save');
+
+        if ($isBackward) {
+            $this->redirect($this->currentField->backwardLink());
+        } else {
+            $this->emit('dataSaved');
+        }
+    }
+
 }
