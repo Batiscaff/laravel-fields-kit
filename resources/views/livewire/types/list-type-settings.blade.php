@@ -6,7 +6,7 @@
               wire:model="settings.columns"></textarea>
 </div>
 <div class="field-group">
-    <label for="field-max-count">{{ __('fields-kit::edit.settings-max-count') }}</label>
+    <label for="field-max-count">{{ __('fields-kit::edit.settings-max-number') }}</label>
     <input type="text"
            class="form-control"
            id="field-max-count"

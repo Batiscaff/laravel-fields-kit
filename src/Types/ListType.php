@@ -71,7 +71,7 @@ class ListType extends AbstractType
      */
     public function setSettings(Collection $settings): void
     {
-        $settings['columns'] = json_decode($settings['columns'], true);
+        $settings['columns'] = json_decode($settings['columns'] ?? '[]', true);
         $this->peculiarField->settings = $settings;
     }
 }

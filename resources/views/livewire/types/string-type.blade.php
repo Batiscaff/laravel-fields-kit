@@ -5,7 +5,7 @@
     <div class="card-body">
         <div class="field-group">
             <label for="field-value">{{ __('fields-kit::edit.field-value') }}</label>
-            @if($this->currentField->settings['multistring'] == 1)
+            @if(!empty($this->currentField->settings['multistring']))
                 <textarea class="form-control"
                           id="field-value"
                           rows="{{ $this->currentField->settings['rows'] ?? 5 }}"

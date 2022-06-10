@@ -32,7 +32,9 @@ return new class extends Migration
 
         Schema::create($tableNames['peculiar_fields_data'], function (Blueprint $table) use ($tableNames) {
             $table->bigIncrements('id');
-            $table->foreignIdFor(Batiscaff\FieldsKit\Models\PeculiarField::class, 'field_id');
+            $table->foreignId('field_id')->references('id')
+                ->on($tableNames['peculiar_fields'])
+                ->cascadeOnDelete();
             $table->json('value');
             $table->bigInteger('sort');
             $table->timestamps();
@@ -52,7 +54,7 @@ return new class extends Migration
             throw new \Exception('Error: config/permission.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
         }
 
-        Schema::dropIfExists($tableNames['peculiar_fields']);
         Schema::dropIfExists($tableNames['peculiar_fields_data']);
+        Schema::dropIfExists($tableNames['peculiar_fields']);
     }
 };

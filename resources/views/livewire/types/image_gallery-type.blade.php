@@ -72,7 +72,7 @@
                            data-preview-file-type="text"
                            wire:loading.attr="disabled"
                            wire:model="value">
-                    <label class="custom-file-label" for="field-value">{{ __('Выберите файл(ы)') }}</label>
+                    <label class="custom-file-label" for="field-value">{{ __('fields-kit::edit.select-files') }}</label>
                 </div>
             </div>
             <div x-show="isUploading">

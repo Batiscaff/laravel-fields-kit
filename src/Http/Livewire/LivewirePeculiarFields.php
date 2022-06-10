@@ -69,12 +69,16 @@ class LivewirePeculiarFields extends Component
 
         $sort = 1 + (int) $this->model->peculiarFields()->max('sort');
 
-        $this->model->peculiarFields()->create([
+        $field = $this->model->peculiarFields()->make([
             'type'  => $this->newFieldType,
             'name'  => $this->newFieldName,
             'title' => $this->newFieldTitle,
             'sort'  => $sort,
         ]);
+
+        $field->typeInstance->setSettings(collect([]));
+
+        $field->save();
 
         $this->pfIsAddModalOpen = false;
         $this->newFieldType = '';

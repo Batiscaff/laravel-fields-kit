@@ -53,6 +53,10 @@ class StringType extends AbstractType
      */
     public function setSettings(Collection $settings): void
     {
+        if (!$settings->has('multistring')) {
+            $settings['multistring'] = false;
+        }
+
         $this->peculiarField->settings = $settings;
     }
 }
