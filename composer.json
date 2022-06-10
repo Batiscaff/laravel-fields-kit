@@ -2,6 +2,12 @@
     "name": "batiscaff/laravel-fields-kit",
     "version": "0.0.1",
     "description": "Custom fields for model in Laravel-Livewire",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Batiscaff"
+        }
+    ],
     "require": {
         "php": "^8.0",
         "laravel/framework": "^9.0",
