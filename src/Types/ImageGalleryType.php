@@ -4,7 +4,6 @@ namespace Batiscaff\FieldsKit\Types;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarFieldData;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Livewire\TemporaryUploadedFile;
 
@@ -45,7 +44,6 @@ class ImageGalleryType extends AbstractType
 
         for ($i=0; $i < $cnt; $i++) {
             if (!isset($value[$i]) || self::isEmptyImagesList($value[$i])) {
-                Storage::disk('public')->delete($value[$i]['src']);
                 $data[$i]->delete();
             } else {
                 if (empty($value[$i])) {
@@ -121,5 +119,16 @@ class ImageGalleryType extends AbstractType
         }
 
         return true;
+    }
+
+    /**
+     * @param PeculiarFieldData $item
+     * @return void
+     */
+    public function afterDeleteItem(PeculiarFieldData $item): void
+    {
+        if (!empty($item->value['src'])) {
+            Storage::disk('public')->delete($item->value['src']);
+        }
     }
 }

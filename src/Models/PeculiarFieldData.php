@@ -42,6 +42,22 @@ class PeculiarFieldData extends Model implements PeculiarFieldDataContract
     }
 
     /**
+     * @inheritdoc
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($item) {
+            $typeInstance = $item->peculiarField->typeInstance;
+
+            if (method_exists($typeInstance, 'afterDeleteItem')) {
+                $typeInstance->afterDeleteItem($item);
+            }
+        });
+    }
+
+    /**
      * @return BelongsTo
      */
     public function peculiarField(): BelongsTo

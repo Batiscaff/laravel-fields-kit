@@ -17,6 +17,7 @@ return [
     'settings-list-columns-type' => 'Type',
     'settings-max-number' => 'Maximum number of rows',
     'main-attributes-header' => 'Edit field main attributes',
+    'select-file' => 'Select file(s)',
     'select-files' => 'Select file(s)',
     'save' => 'Save',
     'apply' => 'Apply',

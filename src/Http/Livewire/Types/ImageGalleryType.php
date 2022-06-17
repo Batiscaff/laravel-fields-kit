@@ -48,10 +48,14 @@ class ImageGalleryType extends Component
      */
     public function save(): void
     {
-        $this->currentField->setValue($this->value);
+        $this->currentField->setValue(new Collection($this->value));
+        $this->reRenderFieldData();
     }
 
-    public function reRenderFieldData()
+    /**
+     * @return void
+     */
+    public function reRenderFieldData(): void
     {
         $this->mount($this->currentField);
         $this->render();
@@ -71,14 +75,8 @@ class ImageGalleryType extends Component
      */
     public function removeItem(int $key): void
     {
-        if (count($this->value) > 1) {
-            $this->value = $this->value->forget($key)->values();
-        } else {
-            $this->value = $this->value->map(function ($item) {
-                data_set($item, '*', '');
-                return $item;
-            });
-        }
+        unset($this->value[$key]);
+        $this->value = array_values($this->value);
     }
 
     /**

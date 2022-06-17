@@ -51,7 +51,7 @@
                                 <span class="mailbox-attachment-size clearfix mt-1 text-gray">
                                     <span>{{ formatBytes($image->getSize()) }}</span>
                                     <button href="#"class="btn btn-default btn-sm float-right"
-                                            wire:click="removeImageGalleryItem({{ $i }})">
+                                            wire:click="removeItem({{ $i }})">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </span>
@@ -90,9 +90,14 @@
                     isUploading: false,
                     progress: 0,
 
+                    root: null,
                     handle: null,
                     method: null,
                     draggable: null,
+
+                    init: function () {
+                        this.root = this.$root;
+                    },
                     index: function (el) {
                         return Array.prototype.indexOf.call(el.parentNode.children, el);
                     },
@@ -124,7 +129,7 @@
                         this.isTarget = false
                         this.draggable = null;
 
-                        const rows = document.getElementsByClassName('sortable');
+                        const rows = this.root.getElementsByClassName('sortable');
                         const indexes = Array.prototype.map.call(rows, function(el) {
                             return el.getAttribute('data-pos');
                         })

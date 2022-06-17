@@ -17,6 +17,7 @@ return [
     'settings-list-columns-type' => 'Тип',
     'settings-max-number' => 'Максимальное количество элементов',
     'main-attributes-header' => 'Изменить параметры поля',
+    'select-file' => 'Выберите файл',
     'select-files' => 'Выберите файл(ы)',
     'save' => 'Сохранить',
     'apply' => 'Применить',
