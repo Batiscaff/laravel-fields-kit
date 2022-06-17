@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <x-jet-dialog-modal wire:model="isEditModalOpen">
+    <x-jet-dialog-modal wire:model="isEditModalOpen" maxWidth="lg">
         <x-slot name="title">
             {{ __('fields-kit::edit.main-attributes-header') }}
         </x-slot>
@@ -65,7 +65,7 @@
                 <span id="new-name-input-error" class="error invalid-feedback block">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="field-group">
+            <div class="field-group pt-3">
                 <label for="field-new-title-input">{{ __('fields-kit::edit.field-title') }}</label>
                 <input type="text"
                        class="form-control @error('newTitle') is-invalid @enderror"

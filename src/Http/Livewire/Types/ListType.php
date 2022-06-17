@@ -16,7 +16,6 @@ class ListType extends Component
     public PeculiarField $currentField;
 
     public Collection $value;
-    public string $columns = '[]';
     public Collection $settings;
 
     protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted'];
@@ -60,7 +59,11 @@ class ListType extends Component
      */
     public function addItem(): void
     {
-        $this->value[] = [];
+        if (empty($this->settings['max_count']) || $this->settings['max_count'] > count($this->value)) {
+            $this->value[] = [];
+        } else {
+            $this->addError('json-list', __('fields-kit::errors.json-list-max-count'));
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-<div class="card card-info" x-data="listSort()">
+<div class="card card-info" x-data="listSort('itemsIsSorted')">
     <div class="card-header">
         {{ __('fields-kit::edit.field-content') }}
     </div>
@@ -6,11 +6,11 @@
         <table class="table json-list-items">
             <thead>
             <tr>
-                <td style="width: 50px;"></td>
+                <th style="width: 50px;"></th>
                 @foreach($settings['columns'] as $column)
-                    <td class="text-nowrap">{{ $column['label'] }}</td>
+                    <th class="text-nowrap">{{ $column['label'] }}</th>
                 @endforeach
-                <td style="width: 50px;"></td>
+                <th style="width: 50px;"></th>
             </tr>
             </thead>
             <tbody>
@@ -45,7 +45,11 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="{{ count($settings['columns']) + 1 }}"></td>
+                    <td colspan="{{ count($settings['columns']) + 1 }}">
+                        @error('json-list')
+                        <span id="json-list-error" class="error invalid-feedback d-block">{{ $message }}</span>
+                        @enderror
+                    </td>
                     <td><button class="btn btn-success btn-sm" wire:click="addItem()"><i class="fas fa-plus"></i></button></td>
                 </tr>
             </tfoot>
@@ -58,9 +62,13 @@
         document.addEventListener('alpine:init', function () {
             Alpine.data('listSort', function() {
                 return {
+                    root: null,
                     handle: null,
                     method: null,
                     draggable: null,
+                    init: function() {
+                        this.root = this.$root;
+                    },
                     index: function (el) {
                         return Array.prototype.indexOf.call(el.parentNode.children, el);
                     },
@@ -93,7 +101,7 @@
                         this.isTarget = false
                         this.draggable = null;
 
-                        const rows = document.getElementsByClassName('sortable');
+                        const rows = this.root.getElementsByClassName('sortable');
                         const indexes = Array.prototype.map.call(rows, function(el) {return el.getAttribute('data-pos')})
 
                         Livewire.emit('itemsIsSorted', indexes);

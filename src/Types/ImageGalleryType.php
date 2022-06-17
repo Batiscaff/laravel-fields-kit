@@ -91,7 +91,6 @@ class ImageGalleryType extends AbstractType
     public function getSettings(): Collection
     {
         $settings = collect($this->peculiarField->settings);
-        $settings['columns'] = json_encode($settings['columns'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         return $settings;
     }
@@ -102,7 +101,6 @@ class ImageGalleryType extends AbstractType
      */
     public function setSettings(Collection $settings): void
     {
-        $settings['columns'] = json_decode($settings['columns'], true);
         $this->peculiarField->settings = $settings;
     }
 

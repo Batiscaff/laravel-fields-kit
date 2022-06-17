@@ -28,7 +28,7 @@ class LivewirePeculiarFieldEdit extends Component
 
     public Collection $settings;
 
-    protected $listeners = ['refreshComponent' => '$refresh'];
+    protected $listeners = ['refreshComponent' => '$refresh', 'columnsIsSorted'];
 
     /**
      * @param PeculiarField $currentField
@@ -110,4 +110,52 @@ class LivewirePeculiarFieldEdit extends Component
         }
     }
 
+    /**
+     * @param array $keys
+     * @return void
+     */
+    public function columnsIsSorted(array $keys): void
+    {
+        $keys    = array_flip($keys);
+        $columns = collect($this->settings['columns'] ?? []);
+
+        $this->settings['columns'] = $columns->sortBy(function ($val, $key) use ($keys) {
+            return $keys[$key];
+        })->values();
+    }
+
+    /**
+     * @return void
+     */
+    public function addColumn(): void
+    {
+        $columns = collect($this->settings['columns'] ?? []);
+
+        $columns[] = [
+            'type' => 'string'
+        ];
+
+        $this->settings['columns'] = $columns;
+    }
+
+    /**
+     * @param int $key
+     * @return void
+     */
+    public function removeColumn(int $key): void
+    {
+        $columns = collect($this->settings['columns'] ?? []);
+
+        if (count($columns) > 1) {
+            unset($columns[$key]);
+            $columns = $columns->forget($key)->values();
+        } else {
+            $columns = $columns->map(function ($item) {
+                data_set($item, '*', '');
+                return $item;
+            });
+        }
+
+        $this->settings['columns'] = $columns;
+    }
 }

@@ -27,4 +27,17 @@ trait HasPeculiarFields
     {
         return '/' . Str::snake(class_basename(self::class)) . '/' . $this->id;
     }
+
+    /**
+     * @return array
+     */
+    public function peculiarFieldsTree(): array
+    {
+        $result = [];
+        foreach ($this->peculiarFields as $field) {
+            $result[$field['name']] = $field->getValue();
+        }
+
+        return $result;
+    }
 }
