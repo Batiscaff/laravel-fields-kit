@@ -9,6 +9,7 @@ return [
     'field-content' => 'Content',
     'field-edit' => 'Edit',
     'field-value' => 'Field value',
+    'no-columns' => 'Need to customize list columns',
     'settings-multistring' => 'Multistring',
     'settings-rows' => 'Number of lines',
     'settings-list-columns' => 'List columns',

@@ -4,6 +4,7 @@ namespace Batiscaff\FieldsKit;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Batiscaff\FieldsKit\Contracts\PeculiarFieldData;
+use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldAddButton;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldEdit;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFields;
 use Illuminate\Filesystem\Filesystem;
@@ -89,6 +90,7 @@ class FieldsKitServiceProvider extends ServiceProvider
     {
         Livewire::component('peculiar-fields', LivewirePeculiarFields::class);
         Livewire::component('peculiar-field-edit', LivewirePeculiarFieldEdit::class);
+        Livewire::component('peculiar-field-add-button', LivewirePeculiarFieldAddButton::class);
 
         foreach (config('fields-kit.types') as $key => $class) {
             if (class_exists($class) && class_exists($class::livewireClass())) {

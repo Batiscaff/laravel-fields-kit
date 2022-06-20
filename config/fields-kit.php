@@ -15,5 +15,6 @@ return [
         'list'          => Batiscaff\FieldsKit\Types\ListType::class,
         'image'         => Batiscaff\FieldsKit\Types\ImageType::class,
         'image_gallery' => Batiscaff\FieldsKit\Types\ImageGalleryType::class,
+        'group'         => Batiscaff\FieldsKit\Types\GroupType::class,
     ],
 ];

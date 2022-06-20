@@ -4,14 +4,15 @@ namespace Batiscaff\FieldsKit\Models;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField as PeculiarFieldContract;
 use Batiscaff\FieldsKit\Exceptions\FieldTypeNotFound;
-use Batiscaff\FieldsKit\Traits\HasPeculiarFields;
 use Batiscaff\FieldsKit\Types\AbstractType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection as DbCollection;
 
 /**
  * Class PeculiarField.
@@ -30,6 +31,7 @@ use Illuminate\Support\Collection;
  *
  * @property-read Model $model
  * @property-read AbstractType $typeInstance
+ * @property-read DbCollection $peculiarFields
  */
 class PeculiarField extends Model implements PeculiarFieldContract
 {
@@ -57,6 +59,14 @@ class PeculiarField extends Model implements PeculiarFieldContract
     public function data(): HasMany
     {
         return $this->hasMany(app(\Batiscaff\FieldsKit\Contracts\PeculiarFieldData::class), 'field_id');
+    }
+
+    /**
+     * @return MorphMany
+     */
+    public function peculiarFields(): MorphMany
+    {
+        return $this->morphMany(static::class, 'model');
     }
 
     /**
@@ -91,11 +101,25 @@ class PeculiarField extends Model implements PeculiarFieldContract
     }
 
     /**
+     * @return mixed
+     */
+    public function getJson(): mixed
+    {
+        return $this->typeInstance->getJson();
+    }
+
+    /**
      * @return string
      */
     public function backwardLink(): string
     {
         $model = $this->model;
-        return method_exists($model, 'backwardLink') ? $model->backwardLink() : '';
+        if ($model instanceof self) {
+            return route('fields-kit.peculiar-field-edit', [
+                'currentField' => $model->id
+            ]);
+        } else {
+            return method_exists($model, 'backwardLink') ? $model->backwardLink() : '';
+        }
     }
 }

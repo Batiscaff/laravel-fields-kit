@@ -24,27 +24,35 @@ abstract class AbstractType
     /**
      * @return mixed
      */
-    abstract function getValue(): mixed;
+    abstract public function getValue(): mixed;
 
     /**
      * @param mixed $value
      * @return void
      */
-    abstract function setValue(mixed $value): void;
+    abstract public function setValue(mixed $value): void;
 
     /**
      * @return Collection
      */
-    abstract function getSettings(): Collection;
+    abstract public function getSettings(): Collection;
 
     /**
      * @param Collection $settings
      * @return void
      */
-    abstract function setSettings(Collection $settings): void;
+    abstract public function setSettings(Collection $settings): void;
 
     /**
      * @return string
      */
     abstract static function livewireClass(): string;
+
+    /**
+     * @return mixed
+     */
+    public function getJson(): mixed
+    {
+        return $this->getValue();
+    }
 }

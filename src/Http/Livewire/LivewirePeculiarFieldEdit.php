@@ -66,7 +66,8 @@ class LivewirePeculiarFieldEdit extends Component
      */
     public function getSettingsViewProperty(): string
     {
-        return "fields-kit::types.{$this->type}-type-settings";
+        return $this->currentField->typeInstance->settingsView
+            ?? "fields-kit::types.{$this->type}-type-settings";
     }
 
     /**

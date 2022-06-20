@@ -3,6 +3,7 @@
         {{ __('fields-kit::edit.field-content') }}
     </div>
     <div class="card-body">
+        @if(!empty($settings['columns']))
         <table class="table json-list-items">
             <thead>
             <tr>
@@ -54,6 +55,9 @@
                 </tr>
             </tfoot>
         </table>
+        @else
+            {{ __("Необходимо настроить поля списка") }}
+        @endif
     </div>
 </div>
 

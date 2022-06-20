@@ -12,30 +12,15 @@ use Livewire\Component;
  */
 class LivewirePeculiarFields extends Component
 {
-
     public $model;
-
-    public string $newFieldType = '';
-    public string $newFieldName = '';
-    public string $newFieldTitle = '';
-
 
     public ?int $pfIdForDelete = null;
     public bool $pfIsDeleteConfirmModalOpen = false;
-    public bool $pfIsAddModalOpen = false;
 
-    public array $typesList;
-
-    protected $listeners = ['refreshComponent' => '$refresh'];
-
-    /**
-     * @return void
-     */
-    public function mount()
-    {
-        $typesConfig = config('fields-kit.types', []);
-        $this->typesList = array_keys($typesConfig);
-    }
+    protected $listeners = [
+        'refreshComponent' => '$refresh',
+        'itemAdded' => '$refresh',
+    ];
 
     /**
      * @return View
@@ -45,47 +30,6 @@ class LivewirePeculiarFields extends Component
         return view('fields-kit::peculiar-fields-section', [
             'fieldsList' => $this->model->peculiarFields,
         ]);
-    }
-
-    /**
-     * @return void
-     */
-    public function pfAddFieldModal(): void
-    {
-        $this->pfIsAddModalOpen = true;
-    }
-
-    /**
-     * @param PeculiarField $peculiarFieldClass
-     * @return void
-     */
-    public function pfAddField(PeculiarField $peculiarFieldClass): void
-    {
-        $this->validate([
-            'newFieldType'  => 'required|string',
-            'newFieldName'  => 'required|string|regex:/^[a-z]\w*$/i',
-            'newFieldTitle' => 'required|string',
-        ]);
-
-        $sort = 1 + (int) $this->model->peculiarFields()->max('sort');
-
-        $field = $this->model->peculiarFields()->make([
-            'type'  => $this->newFieldType,
-            'name'  => $this->newFieldName,
-            'title' => $this->newFieldTitle,
-            'sort'  => $sort,
-        ]);
-
-        $field->typeInstance->setSettings(collect([]));
-
-        $field->save();
-
-        $this->pfIsAddModalOpen = false;
-        $this->newFieldType = '';
-        $this->newFieldName = '';
-        $this->newFieldTitle = '';
-
-        $this->emit('refreshComponent');
     }
 
     /**
