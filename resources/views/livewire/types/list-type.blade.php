@@ -7,11 +7,15 @@
         <table class="table json-list-items">
             <thead>
             <tr>
-                <th style="width: 50px;"></th>
+                @can(config('fields-kit.permission.peculiar-field.update-value'))
+                    <th style="width: 50px;"></th>
+                @endcan
                 @foreach($settings['columns'] as $column)
                     <th class="text-nowrap">{{ $column['label'] }}</th>
                 @endforeach
-                <th style="width: 50px;"></th>
+                @can(config('fields-kit.permission.peculiar-field.update-value'))
+                    <th style="width: 50px;"></th>
+                @endcan
             </tr>
             </thead>
             <tbody>
@@ -28,35 +32,47 @@
                     @mouseup="this.handle = null;"
                     data-pos="{{$i}}"
                 >
-                    <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
+                    @can(config('fields-kit.permission.peculiar-field.update-value'))
+                        <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
+                    @endcan
                     @foreach($settings['columns'] as $column)
                         <td>
-                            <input type="text" class="form-control"
-                                   wire:model.defer="value.{{$i}}.{{ $column['name'] }}">
+                            @can(config('fields-kit.permission.peculiar-field.update-value'))
+                                <input type="text" class="form-control"
+                                       wire:model.defer="value.{{$i}}.{{ $column['name'] }}">
+                            @else
+                                <input type="text" class="form-control"
+                                       value="{{ $value[$i][$column['name']] }}"
+                                       readonly>
+                            @endcan
                         </td>
                     @endforeach
-                    <td>
-                        <button class="btn btn-info btn-sm"
-                                wire:click="removeItem({{ $i }})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
+                    @can(config('fields-kit.permission.peculiar-field.update-value'))
+                        <td>
+                            <button class="btn btn-info btn-sm"
+                                    wire:click="removeItem({{ $i }})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    @endcan
                 </tr>
             @endforeach
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="{{ count($settings['columns']) + 1 }}">
-                        @error('json-list')
-                        <span id="json-list-error" class="error invalid-feedback d-block">{{ $message }}</span>
-                        @enderror
-                    </td>
-                    <td><button class="btn btn-success btn-sm" wire:click="addItem()"><i class="fas fa-plus"></i></button></td>
-                </tr>
-            </tfoot>
+            @can(config('fields-kit.permission.peculiar-field.update-value'))
+                <tfoot>
+                    <tr>
+                        <td colspan="{{ count($settings['columns']) + 1 }}">
+                            @error('json-list')
+                            <span id="json-list-error" class="error invalid-feedback d-block">{{ $message }}</span>
+                            @enderror
+                        </td>
+                        <td><button class="btn btn-success btn-sm" wire:click="addItem()"><i class="fas fa-plus"></i></button></td>
+                    </tr>
+                </tfoot>
+            @endcan
         </table>
         @else
-            {{ __("Необходимо настроить поля списка") }}
+            {{ __('fields-kit::edit.list-needs-configure') }}
         @endif
     </div>
 </div>

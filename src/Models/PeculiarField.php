@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as DbCollection;
+use Illuminate\Translation\Translator;
 
 /**
  * Class PeculiarField.
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Collection as DbCollection;
  * @property Carbon $updated_at
  *
  * @property-read Model $model
+ * @property-read string $typeAsString
  * @property-read AbstractType $typeInstance
  * @property-read DbCollection $peculiarFields
  */
@@ -84,11 +86,34 @@ class PeculiarField extends Model implements PeculiarFieldContract
     }
 
     /**
+     * @return string
+     */
+    public function getTypeAsStringAttribute(): string
+    {
+        /** @var Translator $translator */
+        $translator = app('translator');
+        $key = "fields-kit::types.{$this->type}";
+        return $translator->has($key) ? $translator->get($key) : $this->type;
+    }
+
+    /**
      * @return mixed
      */
     public function getValue(): mixed
     {
         return $this->typeInstance->getValue();
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortValue(): mixed
+    {
+        if (!method_exists($this->typeInstance, 'getShortValue')) {
+            return '';
+        }
+
+        return $this->typeInstance->getShortValue();
     }
 
     /**

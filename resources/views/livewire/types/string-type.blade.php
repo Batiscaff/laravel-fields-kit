@@ -6,15 +6,26 @@
         <div class="field-group">
             <label for="field-value">{{ __('fields-kit::edit.field-value') }}</label>
             @if(!empty($this->currentField->settings['multistring']))
-                <textarea class="form-control"
-                          id="field-value"
-                          rows="{{ $this->currentField->settings['rows'] ?? 5 }}"
-                          wire:model="value"></textarea>
+                @can(config('fields-kit.permission.peculiar-field.update-value'))
+                    <textarea class="form-control"
+                              id="field-value"
+                              rows="{{ $this->currentField->settings['rows'] ?? 5 }}"
+                              wire:model="value"></textarea>
+                @else
+                    <textarea class="form-control"
+                              id="field-value"
+                              rows="{{ $this->currentField->settings['rows'] ?? 5 }}"
+                              readonly>{{ $value }}</textarea>
+                @endcan
             @else
-                <input type="text"
-                       class="form-control"
-                       id="field-value"
-                       wire:model="value">
+                @can(config('fields-kit.permission.peculiar-field.update-value'))
+                    <input type="text"
+                           class="form-control"
+                           id="field-value"
+                           wire:model="value">
+                @else
+                    <input type="text" class="form-control" id="field-value" value="{{ $value }}" readonly>
+                @endcan
             @endif
         </div>
     </div>

@@ -10,6 +10,7 @@ return [
     'field-edit' => 'Edit',
     'field-value' => 'Field value',
     'no-columns' => 'Need to customize list columns',
+    'list-needs-configure' => 'Need to configure list fields',
     'settings-multistring' => 'Multistring',
     'settings-rows' => 'Number of lines',
     'settings-list-columns' => 'List columns',

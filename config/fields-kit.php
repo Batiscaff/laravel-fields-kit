@@ -17,4 +17,15 @@ return [
         'image_gallery' => Batiscaff\FieldsKit\Types\ImageGalleryType::class,
         'group'         => Batiscaff\FieldsKit\Types\GroupType::class,
     ],
+    'permission' => [
+        'peculiar-field' => [
+            'list'            => 'peculiar-field-list',
+            'view'            => 'peculiar-field-view',
+            'add'             => 'peculiar-field-add',
+            'delete'          => 'peculiar-field-delete',
+            'update-settings' => 'peculiar-field-update',
+            'update-value'    => 'peculiar-field-update-value',
+        ]
+    ],
+    'flash_key' => 'fields-kit-flash',
 ];

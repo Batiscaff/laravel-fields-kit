@@ -12,7 +12,7 @@
             @foreach($value as $i => $image)
                 @if(!empty($image))
                     <div class="col-2 d-flex align-items-stretch flex-column sortable"
-                         draggable="true"
+                         draggable="{{ Auth::user()->can(config('fields-kit.permission.peculiar-field.update-value')) ? 'true' : 'false' }}"
                          :class="{'bg-gray-light': isTarget}"
                          x-data="{isTarget:false}"
                          @dragstart.self="dragStart"
@@ -36,10 +36,12 @@
                                     @if(Storage::disk('public')->exists($image['src']))
                                         <span>{{ formatBytes(Storage::disk('public')->size($image['src'])) }}</span>
                                     @endif
-                                    <button href="#"class="btn btn-default btn-sm float-right"
-                                            wire:click="removeItem({{ $i }})">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
+                                    @can(config('fields-kit.permission.peculiar-field.update-value'))
+                                        <button href="#"class="btn btn-default btn-sm float-right"
+                                                wire:click="removeItem({{ $i }})">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    @endcan
                                 </span>
                             </div>
                         @elseif ($image instanceof Livewire\TemporaryUploadedFile)
@@ -50,10 +52,12 @@
                             <div class="card-footer">
                                 <span class="mailbox-attachment-size clearfix mt-1 text-gray">
                                     <span>{{ formatBytes($image->getSize()) }}</span>
-                                    <button href="#"class="btn btn-default btn-sm float-right"
-                                            wire:click="removeItem({{ $i }})">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
+                                    @can(config('fields-kit.permission.peculiar-field.update-value'))
+                                        <button href="#"class="btn btn-default btn-sm float-right"
+                                                wire:click="removeItem({{ $i }})">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    @endcan
                                 </span>
                             </div>
                         @endif
@@ -62,23 +66,25 @@
                 @endif
             @endforeach
         </div>
-        <div>
-            <div class="input-group">
-                <div class="custom-file">
-                    <input id="field-value"
-                           type="file"
-                           class="custom-file-input"
-                           multiple="true"
-                           data-preview-file-type="text"
-                           wire:loading.attr="disabled"
-                           wire:model="value">
-                    <label class="custom-file-label" for="field-value">{{ __('fields-kit::edit.select-files') }}</label>
+        @can(config('fields-kit.permission.peculiar-field.update-value'))
+            <div>
+                <div class="input-group">
+                    <div class="custom-file">
+                        <input id="field-value"
+                               type="file"
+                               class="custom-file-input"
+                               multiple="true"
+                               data-preview-file-type="text"
+                               wire:loading.attr="disabled"
+                               wire:model="value">
+                        <label class="custom-file-label" for="field-value">{{ __('fields-kit::edit.select-files') }}</label>
+                    </div>
+                </div>
+                <div x-show="isUploading">
+                    <progress max="100" x-bind:value="progress"></progress>
                 </div>
             </div>
-            <div x-show="isUploading">
-                <progress max="100" x-bind:value="progress"></progress>
-            </div>
-        </div>
+        @endcan
     </div>
 </div>
 

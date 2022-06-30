@@ -10,6 +10,7 @@ return [
     'field-edit' => 'Изменить',
     'field-value' => 'Значение поля',
     'no-columns' => 'Необходимо настроить поля списка',
+    'list-needs-configure' => 'Необходимо настроить поля списка',
     'settings-multistring' => 'Многострочное',
     'settings-rows' => 'Количество строк',
     'settings-list-columns' => 'Поля списка',

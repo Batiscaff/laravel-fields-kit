@@ -67,14 +67,19 @@ class LivewirePeculiarFieldAddButton extends Component
         ]);
 
         $field->typeInstance->setSettings(collect([]));
-
         $field->save();
+
+        $this->emit('itemAdded');
+        $this->emit(config('fields-kit.flash_key'), [
+            'message' => __('fields-kit::messages.field-added', [
+                'name' => $this->newFieldName
+            ]),
+            'type' => 'success',
+        ]);
 
         $this->isAddModalOpen = false;
         $this->newFieldType = '';
         $this->newFieldName = '';
         $this->newFieldTitle = '';
-
-        $this->emit('itemAdded');
     }
 }

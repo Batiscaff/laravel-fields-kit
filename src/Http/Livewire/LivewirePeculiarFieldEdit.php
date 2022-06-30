@@ -36,6 +36,11 @@ class LivewirePeculiarFieldEdit extends Component
      */
     public function mount(PeculiarField $currentField): void
     {
+        // Dispatch flash-event if session contains flash-message
+        if (session()->has(config('fields-kit.flash_key'))) {
+            $this->emit(config('fields-kit.flash_key'), session(config('fields-kit.flash_key')));
+        }
+
         $this->currentField = $currentField;
 
         $this->type  = $currentField->type;
@@ -104,10 +109,18 @@ class LivewirePeculiarFieldEdit extends Component
     {
         $this->emitTo($this->getLivewireComponentProperty(), 'save');
 
+        $flash = [
+            'message' => __('fields-kit::messages.field-updated', [
+                'name' => $this->currentField->title
+            ]),
+            'type' => 'success',
+        ];
+
         if ($isBackward) {
+            session()->flash(config('fields-kit.flash_key'), $flash);
             $this->redirect($this->currentField->backwardLink());
         } else {
-            $this->emit('dataSaved');
+            $this->emit(config('fields-kit.flash_key'), $flash);
         }
     }
 

@@ -32,6 +32,18 @@ class ImageGalleryType extends AbstractType
     }
 
     /**
+     * @return string
+     */
+    public function getShortValue(): string
+    {
+        $list = $this->getValue();
+        $cnt = count($list);
+
+        return $cnt ? trans_choice('fields-kit::section.images-count', $cnt, ['count' => $cnt])
+            : __('fields-kit::section.no-value');
+    }
+
+    /**
      * @param string $value
      * @return void
      */

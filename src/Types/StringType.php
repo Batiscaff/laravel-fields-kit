@@ -4,6 +4,7 @@ namespace Batiscaff\FieldsKit\Types;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 
 /**
  * Class StringType.
@@ -25,6 +26,14 @@ class StringType extends AbstractType
     public function getValue(): string
     {
         return $this->peculiarField->data[0]?->value['value'] ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortValue(): string
+    {
+        return Str::limit(htmlspecialchars($this->getValue()), 50);
     }
 
     /**

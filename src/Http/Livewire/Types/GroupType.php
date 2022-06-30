@@ -5,6 +5,7 @@ namespace Batiscaff\FieldsKit\Http\Livewire\Types;
 use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 /**
@@ -54,7 +55,10 @@ class GroupType extends Component
         $this->currentField->setValue($this->value);
     }
 
-    public function reRenderFieldData()
+    /**
+     * @return void
+     */
+    public function reRenderFieldData(): void
     {
         $this->mount($this->currentField);
         $this->render();
@@ -66,8 +70,15 @@ class GroupType extends Component
      */
     public function askToDelete(int $itemId): void
     {
-        $this->idForDelete              = $itemId;
-        $this->isDeleteConfirmModalOpen = true;
+        if (Auth::user()->can(config('fields-kit.permission.peculiar-field.delete'))) {
+            $this->idForDelete              = $itemId;
+            $this->isDeleteConfirmModalOpen = true;
+        } else {
+            $this->emit(config('fields-kit.flash_key'), [
+                'message' => __('fields-kit::messages.delete-item-denied'),
+                'type' => 'error',
+            ]);
+        }
     }
 
     /**
@@ -83,6 +94,11 @@ class GroupType extends Component
 
         $this->isDeleteConfirmModalOpen = false;
         $this->emitSelf('reRenderFieldData');
+
+        $this->emit(config('fields-kit.flash_key'), [
+            'message' => __('fields-kit::messages.field-deleted'),
+            'type' => 'success',
+        ]);
     }
 
     /**
@@ -99,5 +115,10 @@ class GroupType extends Component
         }
 
         $this->value = $this->value->sortBy('sort')->values();
+
+        $this->emit(config('fields-kit.flash_key'), [
+            'message' => __('fields-kit::messages.order-changed'),
+            'type' => 'success',
+        ]);
     }
 }

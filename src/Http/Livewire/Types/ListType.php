@@ -62,7 +62,7 @@ class ListType extends Component
         if (empty($this->settings['max_count']) || $this->settings['max_count'] > count($this->value)) {
             $this->value[] = [];
         } else {
-            $this->addError('json-list', __('fields-kit::errors.json-list-max-count'));
+            $this->addError('json-list', __('fields-kit::messages.json-list-max-count'));
         }
     }
 

@@ -32,6 +32,17 @@ class ImageType extends AbstractType
     }
 
     /**
+     * @return string
+     */
+    public function getShortValue(): string
+    {
+        $image = $this->getValue();
+
+        return $image ? trans_choice('fields-kit::section.images-count', 1, ['count' => 1])
+            : __('fields-kit::section.no-value');
+    }
+
+    /**
      * @param string $value
      * @return void
      */

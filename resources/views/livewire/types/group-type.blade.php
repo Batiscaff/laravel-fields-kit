@@ -4,13 +4,16 @@
             {{ __('fields-kit::edit.field-content') }}
         </div>
         <div class="card-body">
-            <table class="table json-list-items">
+            <table class="table json-list-items table-striped">
                 <thead>
                 <tr>
-                    <th style="width: 50px;"></th>
-                    <th>{{ __('fields-kit::section.name') }}</th>
+                    @can(config('fields-kit.permission.peculiar-field.update-value'))
+                        <th style="width: 50px;"></th>
+                    @endcan
                     <th>{{ __('fields-kit::section.title') }}</th>
+                    <th>{{ __('fields-kit::section.name') }}</th>
                     <th>{{ __('fields-kit::section.type') }}</th>
+                    <th>{{ __('fields-kit::section.value') }}</th>
                     <th style="width: 2%;"></th>
                 </tr>
                 </thead>
@@ -28,33 +31,42 @@
                         @mouseup="this.handle = null;"
                         data-pos="{{$i}}"
                     >
-                        <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
-                        <td>{{ $item->name }}</td>
+                        @can(config('fields-kit.permission.peculiar-field.update-value'))
+                            <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
+                        @endcan
                         <td>{{ $item->title }}</td>
-                        <td>{{ $item->type }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->typeAsString }}</td>
+                        <td>{{ $item->getShortValue() }}</td>
                         <td class="text-nowrap">
-                            <a class="btn btn-info btn-sm"
-                               href="{{ route('fields-kit.peculiar-field-edit', ['currentField' => $item->id], false) }}">
-                                <span class="fas fa-pencil-alt"></span>
-                                {{ __('fields-kit::section.edit') }}
-                            </a>
-                            <button wire:click="askToDelete({{ $item->id }})" class="btn btn-danger btn-sm">
-                                <span class="fas fa-trash"></span>
-                                {{ __('fields-kit::section.delete') }}
-                            </button>
+                            @can(config('fields-kit.permission.peculiar-field.view'))
+                                <a class="btn btn-info btn-sm"
+                                   href="{{ route('fields-kit.peculiar-field-edit', ['currentField' => $item->id], false) }}">
+                                    <span class="fas fa-pencil-alt"></span>
+                                    {{ __('fields-kit::section.edit') }}
+                                </a>
+                            @endcan
+                            @can(config('fields-kit.permission.peculiar-field.delete'))
+                                <button wire:click="askToDelete({{ $item->id }})" class="btn btn-danger btn-sm">
+                                    <span class="fas fa-trash"></span>
+                                    {{ __('fields-kit::section.delete') }}
+                                </button>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4">
+                        <td colspan="{{ Auth::user()->can(config('fields-kit.permission.peculiar-field.update-value')) ? 5 : 4 }}">
                             @error('json-list')
                             <span id="json-list-error" class="error invalid-feedback d-block">{{ $message }}</span>
                             @enderror
                         </td>
                         <td class="text-right">
-                            @livewire('peculiar-field-add-button', ['model' => $this->currentField])
+                            @can([config('fields-kit.permission.peculiar-field.update-value'), config('fields-kit.permission.peculiar-field.add')])
+                                @livewire('peculiar-field-add-button', ['model' => $this->currentField])
+                            @endcan
                         </td>
                     </tr>
                 </tfoot>
@@ -62,22 +74,24 @@
         </div>
     </div>
 
-    <x-jet-dialog-modal wire:model="isDeleteConfirmModalOpen">
-        <x-slot name="title">
-            {{ __('fields-kit::section.delete-item') }}
-        </x-slot>
-        <x-slot name="content">
-            <p>{{ __('fields-kit::section.want-to-delete') }}</p>
-        </x-slot>
-        <x-slot name="footer">
-            <button class="btn btn-danger" class="ml-2" wire:click="deleteItem" wire:loading.attr="disabled">
-                {{ __('fields-kit::section.delete') }}
-            </button>
-            <button class="btn btn-secondary" class="ml-2" data-dismiss="modal" aria-label="{{ __('fields-kit::section.cancel') }}">
-                {{ __('fields-kit::section.cancel') }}
-            </button>
-        </x-slot>
-    </x-jet-dialog-modal>
+    @can(config('fields-kit.permission.peculiar-field.delete'))
+        <x-jet-dialog-modal wire:model="isDeleteConfirmModalOpen">
+            <x-slot name="title">
+                {{ __('fields-kit::section.delete-item') }}
+            </x-slot>
+            <x-slot name="content">
+                <p>{{ __('fields-kit::section.want-to-delete') }}</p>
+            </x-slot>
+            <x-slot name="footer">
+                <button class="btn btn-danger" class="ml-2" wire:click="deleteItem" wire:loading.attr="disabled">
+                    {{ __('fields-kit::section.delete') }}
+                </button>
+                <button class="btn btn-secondary" class="ml-2" data-dismiss="modal" aria-label="{{ __('fields-kit::section.cancel') }}">
+                    {{ __('fields-kit::section.cancel') }}
+                </button>
+            </x-slot>
+        </x-jet-dialog-modal>
+    @endcan
 </div>
 
 @push('scripts')

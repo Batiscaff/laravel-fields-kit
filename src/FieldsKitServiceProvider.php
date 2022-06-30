@@ -7,6 +7,7 @@ use Batiscaff\FieldsKit\Contracts\PeculiarFieldData;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldAddButton;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldEdit;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFields;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
@@ -39,17 +40,19 @@ class FieldsKitServiceProvider extends ServiceProvider
         $this->configureComponents();
         $this->configureRoutes();
         $this->configureLanguages();
-
+        $this->configurePermissions();
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views/livewire', 'fields-kit');
-//        $this->loadViewsFrom($this->app->resourcePath('views/livewire/fields-kit'), 'fields-kit');
 
         if ($this->app->runningInConsole()) {
             $this->offerPublishing();
         }
     }
 
-    protected function offerPublishing()
+    /**
+     * @return void
+     */
+    protected function offerPublishing(): void
     {
         if (! function_exists('config_path')) {
             // function not available and 'publish' not relevant in Lumen
@@ -61,7 +64,7 @@ class FieldsKitServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->publishes([
-            __DIR__.'/../migrations/create_peculiar_fields_table.php.stub' => $this->getMigrationFileName('create_peculiar_fields_table.php'),
+            __DIR__.'/../database/migrations/create_peculiar_fields_table.php.stub' => $this->getMigrationFileName('create_peculiar_fields_table.php'),
         ], 'migrations');
 
         $this->publishes([
@@ -118,9 +121,25 @@ class FieldsKitServiceProvider extends ServiceProvider
     /**
      * @return void
      */
-    public function configureLanguages(): void
+    protected function configureLanguages(): void
     {
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'fields-kit');
+    }
+
+    /**
+     * @return void
+     */
+    protected function configurePermissions(): void
+    {
+        foreach (config('fields-kit.permission.peculiar-field') as $permission) {
+            app(Gate::class)->define($permission, function ($user) use ($permission) {
+                if (method_exists($user, 'checkPermissionTo')) {
+                    return $user->checkPermissionTo($permission);
+                }
+
+                return true;
+            });
+        }
     }
 
     /**
