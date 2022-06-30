@@ -10,7 +10,7 @@
                 {{ __('fields-kit::section.add-field') }}
             </x-slot>
             <x-slot name="content">
-                <div class="field-group">
+                <div class="field-group text-left">
                     <label for="new-field-type-input">{{ __('fields-kit::section.select-field-type') }}</label>
                     <select class="form-control select2  @error('newFieldType') is-invalid @enderror"
                             id="new-type-input"
@@ -24,7 +24,7 @@
                     <span id="new-type-input-error" class="error invalid-feedback block">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="field-group">
+                <div class="field-group text-left">
                     <label for="new-field-name-input">{{ __('fields-kit::section.name') }}</label>
                     <input type="text"
                            class="form-control @error('newFieldName') is-invalid @enderror"
@@ -33,7 +33,7 @@
                     <span id="new-name-input-error" class="error invalid-feedback block">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="field-group">
+                <div class="field-group text-left">
                     <label for="new-field-title-input">{{ __('fields-kit::section.title') }}</label>
                     <input type="text"
                            class="form-control @error('newFieldTitle') is-invalid @enderror"

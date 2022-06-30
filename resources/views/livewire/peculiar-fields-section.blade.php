@@ -64,7 +64,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card-footer border-top">
+            <div class="card-footer border-top text-right">
                 @livewire('peculiar-field-add-button', ['model' => $this->model])
             </div>
         @else
