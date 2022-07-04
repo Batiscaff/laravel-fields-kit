@@ -1,3 +1,15 @@
+@php
+$columnsCount = 4;
+if (Auth::user()->can(config('fields-kit.permission.peculiar-field.update-value'))) {
+    $columnsCount++;
+}
+
+$showName = false;
+if ($currentField->getSettings('group-type') === \Batiscaff\FieldsKit\Types\GroupType::GROUP_TYPE_COMMON) {
+    $columnsCount++;
+    $showName = true;
+}
+@endphp
 <div>
     <div class="card card-info" x-data="listSort('itemsIsSorted')">
         <div class="card-header">
@@ -11,7 +23,9 @@
                         <th style="width: 50px;"></th>
                     @endcan
                     <th>{{ __('fields-kit::section.title') }}</th>
-                    <th>{{ __('fields-kit::section.name') }}</th>
+                    @if($showName)
+                        <th>{{ __('fields-kit::section.name') }}</th>
+                    @endif
                     <th>{{ __('fields-kit::section.type') }}</th>
                     <th>{{ __('fields-kit::section.value') }}</th>
                     <th style="width: 2%;"></th>
@@ -35,7 +49,9 @@
                             <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
                         @endcan
                         <td>{{ $item->title }}</td>
-                        <td>{{ $item->name }}</td>
+                        @if($showName)
+                            <td>{{ $item->name }}</td>
+                        @endif
                         <td>{{ $item->typeAsString }}</td>
                         <td>{{ $item->getShortValue() }}</td>
                         <td class="text-nowrap">
@@ -58,7 +74,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="{{ Auth::user()->can(config('fields-kit.permission.peculiar-field.update-value')) ? 5 : 4 }}">
+                        <td colspan="{{ $columnsCount-1 }}">
                             @error('json-list')
                             <span id="json-list-error" class="error invalid-feedback d-block">{{ $message }}</span>
                             @enderror

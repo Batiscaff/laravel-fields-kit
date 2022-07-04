@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as DbCollection;
 use Illuminate\Translation\Translator;
@@ -131,6 +132,15 @@ class PeculiarField extends Model implements PeculiarFieldContract
     public function getJson(): mixed
     {
         return $this->typeInstance->getJson();
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getSettings(string $key): mixed
+    {
+        return Arr::get($this->settings, $key);
     }
 
     /**

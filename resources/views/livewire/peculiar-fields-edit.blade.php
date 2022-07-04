@@ -67,6 +67,7 @@
                 {{ __('fields-kit::edit.main-attributes-header') }}
             </x-slot>
             <x-slot name="content">
+            @if(!$isModelFlatGroup)
                 <div class="field-group">
                     <label for="field-new-name-input">{{ __('fields-kit::edit.field-name') }}</label>
                     <input type="text"
@@ -77,6 +78,7 @@
                     <span id="new-name-input-error" class="error invalid-feedback block">{{ $message }}</span>
                     @enderror
                 </div>
+            @endif
                 <div class="field-group pt-3">
                     <label for="field-new-title-input">{{ __('fields-kit::edit.field-title') }}</label>
                     <input type="text"

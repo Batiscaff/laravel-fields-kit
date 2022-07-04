@@ -26,4 +26,7 @@ return [
     'cancel' => 'Отмена',
     'yes' => 'Да',
     'no' => 'Нет',
+    'settings-group-type' => 'Тип группы',
+    'group-type-common' => 'Обычная',
+    'group-type-flat' => 'Плоская',
 ];

@@ -37,6 +37,9 @@ class GroupType extends Component
         $this->value        = $currentField->getValue();
         $this->settings     = $currentField->settings;
 
+        if (!$currentField->getSettings('group-type')) {
+            $this->settings['group-type'] = \Batiscaff\FieldsKit\Types\GroupType::GROUP_TYPE_COMMON;
+        }
     }
 
     /**

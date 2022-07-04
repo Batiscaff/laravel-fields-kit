@@ -26,4 +26,7 @@ return [
     'cancel' => 'Cancel',
     'yes' => 'Yes',
     'no' => 'No',
+    'settings-group-type' => 'Group type',
+    'group-type-common' => 'Common',
+    'group-type-flat' => 'Flat',
 ];

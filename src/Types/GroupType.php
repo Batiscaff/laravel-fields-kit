@@ -10,6 +10,9 @@ use Illuminate\Support\Collection;
  */
 class GroupType extends AbstractType
 {
+    public const GROUP_TYPE_COMMON = 'common';
+    public const GROUP_TYPE_FLAT   = 'flat';
+
     /**
      * @return string
      */
@@ -46,11 +49,19 @@ class GroupType extends AbstractType
     {
     }
 
+    /**
+     * @return mixed
+     */
     public function getJson(): mixed
     {
         $result = [];
         foreach ($this->peculiarField->peculiarFields as $child) {
-            $result[$child['name']] = $child->getJson();
+            $settings = $this->getSettings();
+            if (isset($settings['group-type']) && $settings['group-type'] == self::GROUP_TYPE_FLAT) {
+                $result[] = $child->getJson();
+            } else {
+                $result[$child['name']] = $child->getJson();
+            }
         }
 
         return $result;

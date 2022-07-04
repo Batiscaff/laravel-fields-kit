@@ -18,8 +18,11 @@ class LivewirePeculiarFieldAddButton extends Component
     public string $newFieldTitle = '';
 
     public bool $isAddModalOpen = false;
+    public bool $isFlatGroup = false;
 
     public array $typesList;
+
+    protected $listeners = ['reRenderFieldData'];
 
     /**
      * @return void
@@ -28,6 +31,11 @@ class LivewirePeculiarFieldAddButton extends Component
     {
         $typesConfig = config('fields-kit.types', []);
         $this->typesList = array_keys($typesConfig);
+
+        $this->isFlatGroup = $this->model instanceof \Batiscaff\FieldsKit\Contracts\PeculiarField
+            && $this->model->typeInstance instanceof \Batiscaff\FieldsKit\Types\GroupType
+            && $this->model->getSettings('group-type') === \Batiscaff\FieldsKit\Types\GroupType::GROUP_TYPE_FLAT
+        ;
     }
 
     /**
@@ -36,6 +44,15 @@ class LivewirePeculiarFieldAddButton extends Component
     public function render(): View
     {
         return view('fields-kit::peculiar-fields-add-button');
+    }
+
+    /**
+     * @return void
+     */
+    public function reRenderFieldData(): void
+    {
+        $this->mount();
+        $this->render();
     }
 
     /**
@@ -51,11 +68,16 @@ class LivewirePeculiarFieldAddButton extends Component
      */
     public function addField(): void
     {
-        $this->validate([
+        $rules = [
             'newFieldType'  => 'required|string',
-            'newFieldName'  => 'required|string|regex:/^[a-z]\w*$/i',
             'newFieldTitle' => 'required|string',
-        ]);
+        ];
+
+        if (!$this->isFlatGroup) {
+            $rules['newFieldName']  = 'required|string|regex:/^[a-z]\w*$/i';
+        }
+
+        $this->validate($rules);
 
         $sort = 1 + (int) $this->model->peculiarFields()->max('sort');
 
@@ -72,7 +94,7 @@ class LivewirePeculiarFieldAddButton extends Component
         $this->emit('itemAdded');
         $this->emit(config('fields-kit.flash_key'), [
             'message' => __('fields-kit::messages.field-added', [
-                'name' => $this->newFieldName
+                'name' => $this->newFieldTitle
             ]),
             'type' => 'success',
         ]);

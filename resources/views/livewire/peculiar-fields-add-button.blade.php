@@ -24,6 +24,7 @@
                     <span id="new-type-input-error" class="error invalid-feedback block">{{ $message }}</span>
                     @enderror
                 </div>
+            @if(!$isFlatGroup)
                 <div class="field-group text-left">
                     <label for="new-field-name-input">{{ __('fields-kit::section.name') }}</label>
                     <input type="text"
@@ -33,6 +34,7 @@
                     <span id="new-name-input-error" class="error invalid-feedback block">{{ $message }}</span>
                     @enderror
                 </div>
+            @endif
                 <div class="field-group text-left">
                     <label for="new-field-title-input">{{ __('fields-kit::section.title') }}</label>
                     <input type="text"

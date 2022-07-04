@@ -24,11 +24,12 @@ class LivewirePeculiarFieldEdit extends Component
     public string $newName = '';
     public string $newTitle = '';
 
-    public bool $isEditModalOpen = false;
+    public bool $isEditModalOpen  = false;
+    public bool $isModelFlatGroup = false;
 
     public Collection $settings;
 
-    protected $listeners = ['refreshComponent' => '$refresh', 'columnsIsSorted'];
+    protected $listeners = ['refreshComponent' => '$refresh', 'columnsIsSorted', 'reRenderFieldData'];
 
     /**
      * @param PeculiarField $currentField
@@ -48,6 +49,11 @@ class LivewirePeculiarFieldEdit extends Component
         $this->title = $currentField->title;
 
         $this->settings = $currentField->typeInstance->getSettings();
+
+        $this->isModelFlatGroup = $currentField->model instanceof \Batiscaff\FieldsKit\Contracts\PeculiarField
+            && $currentField->model->typeInstance instanceof \Batiscaff\FieldsKit\Types\GroupType
+            && $currentField->model->getSettings('group-type') === \Batiscaff\FieldsKit\Types\GroupType::GROUP_TYPE_FLAT
+        ;
     }
 
     /**
@@ -56,6 +62,15 @@ class LivewirePeculiarFieldEdit extends Component
     public function render(): View
     {
         return view('fields-kit::peculiar-fields-edit');
+    }
+
+    /**
+     * @return void
+     */
+    public function reRenderFieldData(): void
+    {
+        $this->mount($this->currentField);
+        $this->render();
     }
 
     /**
