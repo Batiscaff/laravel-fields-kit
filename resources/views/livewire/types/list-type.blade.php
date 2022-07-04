@@ -1,18 +1,29 @@
+@php
+if ($settings['list-type'] === \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_FLAT) {
+    $columnsCount = 1;
+} else {
+    $columnsCount = count($settings['columns']);
+}
+@endphp
 <div class="card card-info" x-data="listSort('itemsIsSorted')">
     <div class="card-header">
         {{ __('fields-kit::edit.field-content') }}
     </div>
     <div class="card-body">
-        @if(!empty($settings['columns']))
+        @if(!empty($settings['columns']) || $settings['list-type'] === \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_FLAT)
         <table class="table json-list-items">
             <thead>
             <tr>
                 @can(config('fields-kit.permission.peculiar-field.update-value'))
                     <th style="width: 50px;"></th>
                 @endcan
-                @foreach($settings['columns'] as $column)
-                    <th class="text-nowrap">{{ $column['label'] }}</th>
-                @endforeach
+                @if($settings['list-type'] === \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_FLAT)
+                    <th class="text-nowrap">{{ __('fields-kit::edit.list-value') }}</th>
+                @else
+                    @foreach($settings['columns'] as $column)
+                        <th class="text-nowrap">{{ $column['label'] }}</th>
+                    @endforeach
+                @endif
                 @can(config('fields-kit.permission.peculiar-field.update-value'))
                     <th style="width: 50px;"></th>
                 @endcan
@@ -35,18 +46,31 @@
                     @can(config('fields-kit.permission.peculiar-field.update-value'))
                         <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
                     @endcan
-                    @foreach($settings['columns'] as $column)
+                    @if($settings['list-type'] === \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_FLAT)
                         <td>
                             @can(config('fields-kit.permission.peculiar-field.update-value'))
                                 <input type="text" class="form-control"
-                                       wire:model.defer="value.{{$i}}.{{ $column['name'] }}">
+                                       wire:model.defer="value.{{$i}}.value">
                             @else
                                 <input type="text" class="form-control"
-                                       value="{{ $value[$i][$column['name']] }}"
+                                       value="{{ $value[$i]['value'] }}"
                                        readonly>
                             @endcan
                         </td>
-                    @endforeach
+                    @else
+                        @foreach($settings['columns'] as $column)
+                            <td>
+                                @can(config('fields-kit.permission.peculiar-field.update-value'))
+                                    <input type="text" class="form-control"
+                                           wire:model.defer="value.{{$i}}.{{ $column['name'] }}">
+                                @else
+                                    <input type="text" class="form-control"
+                                           value="{{ $value[$i][$column['name']] }}"
+                                           readonly>
+                                @endcan
+                            </td>
+                        @endforeach
+                    @endif
                     @can(config('fields-kit.permission.peculiar-field.update-value'))
                         <td>
                             <button class="btn btn-info btn-sm"
@@ -61,7 +85,7 @@
             @can(config('fields-kit.permission.peculiar-field.update-value'))
                 <tfoot>
                     <tr>
-                        <td colspan="{{ count($settings['columns']) + 1 }}">
+                        <td colspan="{{ $columnsCount + 1 }}">
                             @error('json-list')
                             <span id="json-list-error" class="error invalid-feedback d-block">{{ $message }}</span>
                             @enderror

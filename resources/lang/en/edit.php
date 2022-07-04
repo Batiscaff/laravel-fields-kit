@@ -27,6 +27,10 @@ return [
     'yes' => 'Yes',
     'no' => 'No',
     'settings-group-type' => 'Group type',
-    'group-type-common' => 'Common',
-    'group-type-flat' => 'Flat',
+    'group-type-common' => 'Common group',
+    'group-type-flat' => 'Flat group',
+    'settings-list-type' => 'List type',
+    'list-type-common' => 'Common list',
+    'list-type-flat' => 'Flat list',
+    'list-value' => 'Value',
 ];

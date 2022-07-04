@@ -1,55 +1,70 @@
-<div class="field-group pt-3" x-data="columnsSort()">
-    <label for="field-columns">{{ __('fields-kit::edit.settings-list-columns') }}</label>
-    <table class="table">
-        <thead>
-            <tr>
-                <th style="width: 50px;"></th>
-                <th class="text-nowrap">{{ __('fields-kit::edit.settings-list-columns-name') }}</th>
-                <th class="text-nowrap">{{ __('fields-kit::edit.settings-list-columns-label') }}</th>
-                <th style="width: 50px;"></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($settings['columns'] ?? [] as $i => $item)
-            <tr draggable="true"
-                class="sortable"
-                :class="{'bg-gray-light': isTarget}"
-                x-data="{isTarget:false}"
-                @dragstart.self="dragStart"
-                @dragover.prevent="isTarget=true"
-                @dragleave.prevent="isTarget=false"
-                @drop.prevent="dropEl"
-                @mousedown="this.handle=$event.target"
-                @mouseup="this.handle = null;"
-                data-pos="{{$i}}"
-            >
-                <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
-                <td>
-                    <input type="text" class="form-control"
-                           wire:model.defer="settings.columns.{{$i}}.name">
-                </td>
-                <td>
-                    <input type="text" class="form-control"
-                           wire:model.defer="settings.columns.{{$i}}.label">
-                </td>
-                <td>
-                    <button class="btn btn-info btn-sm"
-                            wire:click="removeColumn({{ $i }})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="3"></td>
-            <td><button class="btn btn-success btn-sm" wire:click="addColumn()"><i class="fas fa-plus"></i></button></td>
-        </tr>
-        </tfoot>
-    </table>
+<div class="field-group pt-3">
+    <label for="field-list-type">{{ __('fields-kit::edit.settings-list-type') }}</label>
+    <select class="form-control"
+            id="field-list-type"
+            wire:model="settings.list-type">
+        <option value="{{ \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_COMMON }}">
+            {{ __('fields-kit::edit.list-type-common') }}
+        </option>
+        <option value="{{ \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_FLAT }}">
+            {{ __('fields-kit::edit.list-type-flat') }}
+        </option>
+    </select>
 </div>
-<div class="field-group">
+@if(Arr::get($settings, 'list-type') === \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_COMMON)
+    <div class="field-group pt-3" x-data="columnsSort()">
+        <label for="field-columns">{{ __('fields-kit::edit.settings-list-columns') }}</label>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th class="text-nowrap">{{ __('fields-kit::edit.settings-list-columns-name') }}</th>
+                    <th class="text-nowrap">{{ __('fields-kit::edit.settings-list-columns-label') }}</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($settings['columns'] ?? [] as $i => $item)
+                <tr draggable="true"
+                    class="sortable"
+                    :class="{'bg-gray-light': isTarget}"
+                    x-data="{isTarget:false}"
+                    @dragstart.self="dragStart"
+                    @dragover.prevent="isTarget=true"
+                    @dragleave.prevent="isTarget=false"
+                    @drop.prevent="dropEl"
+                    @mousedown="this.handle=$event.target"
+                    @mouseup="this.handle = null;"
+                    data-pos="{{$i}}"
+                >
+                    <td><i class="fas fa-bars sort-handle" style="cursor: move"></i></td>
+                    <td>
+                        <input type="text" class="form-control"
+                               wire:model.defer="settings.columns.{{$i}}.name">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control"
+                               wire:model.defer="settings.columns.{{$i}}.label">
+                    </td>
+                    <td>
+                        <button class="btn btn-info btn-sm"
+                                wire:click="removeColumn({{ $i }})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td><button class="btn btn-success btn-sm" wire:click="addColumn()"><i class="fas fa-plus"></i></button></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+@endif
+<div class="field-group pt-3">
     <label for="field-max-count">{{ __('fields-kit::edit.settings-max-number') }}</label>
     <input type="text"
            class="form-control"

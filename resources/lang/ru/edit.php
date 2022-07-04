@@ -27,6 +27,10 @@ return [
     'yes' => 'Да',
     'no' => 'Нет',
     'settings-group-type' => 'Тип группы',
-    'group-type-common' => 'Обычная',
-    'group-type-flat' => 'Плоская',
+    'group-type-common' => 'Обычная группа',
+    'group-type-flat' => 'Плоская группа',
+    'settings-list-type' => 'Тип списка',
+    'list-type-common' => 'Обычный список',
+    'list-type-flat' => 'Плоский список',
+    'list-value' => 'Значение',
 ];

@@ -30,6 +30,9 @@ class ListType extends Component
         $this->value        = $currentField->getValue();
         $this->settings     = $currentField->settings;
 
+        if (!$currentField->getSettings('list-type')) {
+            $this->settings['list-type'] = \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_COMMON;
+        }
     }
 
     /**
