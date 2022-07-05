@@ -96,6 +96,19 @@ class ImageGalleryType extends AbstractType
     }
 
     /**
+     * @return mixed
+     */
+    public function getJson(): mixed
+    {
+        $json = $this->getValue();
+        foreach ($json as &$item) {
+            $item['src'] = Storage::disk('public')->url($item['src']);
+        }
+
+        return $json;
+    }
+
+    /**
      * @return Collection
      */
     public function getSettings(): Collection
