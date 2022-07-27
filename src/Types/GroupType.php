@@ -55,7 +55,8 @@ class GroupType extends AbstractType
     public function getJson(): mixed
     {
         $result = [];
-        foreach ($this->peculiarField->peculiarFields as $child) {
+        $children = $this->peculiarField->peculiarFields()->orderBy('sort', 'asc')->get();
+        foreach ($children as $child) {
             $settings = $this->getSettings();
             if (isset($settings['group-type']) && $settings['group-type'] == self::GROUP_TYPE_FLAT) {
                 $result[] = $child->getJson();
