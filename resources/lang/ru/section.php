@@ -23,4 +23,6 @@ return [
     'images-count' => ':count изображение|:count изображения|:count изображений',
     'no-fields' => 'Поля не заданы',
     'fields-count' => ':count поле|:count поля|:count полей',
+    'yes' => 'Да',
+    'no' => 'Нет',
 ];

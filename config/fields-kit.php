@@ -13,6 +13,7 @@ return [
         'string'        => Batiscaff\FieldsKit\Types\StringType::class,
         'html'          => Batiscaff\FieldsKit\Types\HtmlType::class,
         'list'          => Batiscaff\FieldsKit\Types\ListType::class,
+        'bool'          => Batiscaff\FieldsKit\Types\BoolType::class,
         'image'         => Batiscaff\FieldsKit\Types\ImageType::class,
         'image_gallery' => Batiscaff\FieldsKit\Types\ImageGalleryType::class,
         'group'         => Batiscaff\FieldsKit\Types\GroupType::class,

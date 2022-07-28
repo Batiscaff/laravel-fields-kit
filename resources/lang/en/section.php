@@ -23,4 +23,6 @@ return [
     'images-count' => ':count image|:count images',
     'no-fields' => 'No fields',
     'fields-count' => ':count field|:count fields',
+    'yes' => 'Yes',
+    'no' => 'No',
 ];
