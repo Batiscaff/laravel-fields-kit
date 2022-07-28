@@ -85,7 +85,7 @@ class ImageType extends AbstractType
     public function getJson(): mixed
     {
         $json = $this->getValue();
-        $json['src'] = Storage::disk('public')->url($json['src']);
+        $json['src'] = !empty($json['src']) ? Storage::disk('public')->url($json['src']) : null;
         return $json;
     }
 
