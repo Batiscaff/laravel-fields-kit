@@ -23,6 +23,7 @@ return [
             'view'            => 'peculiar-field-view',
             'add'             => 'peculiar-field-add',
             'delete'          => 'peculiar-field-delete',
+            'copy'            => 'peculiar-field-copy',
             'update-settings' => 'peculiar-field-update',
             'update-value'    => 'peculiar-field-update-value',
         ]

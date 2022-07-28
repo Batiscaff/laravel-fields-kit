@@ -10,6 +10,8 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'add' => 'Add',
+    'copy' => 'Copy',
+    'copy-title' => ' (copy :num)',
     'cancel' => 'Cancel',
     'add-field' => 'Add field',
     'select-field-type' => 'Select field type',

@@ -2,7 +2,10 @@
 
 namespace Batiscaff\FieldsKit\Types;
 
+use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Batiscaff\FieldsKit\Contracts\PeculiarFieldData;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Livewire\TemporaryUploadedFile;
@@ -154,6 +157,37 @@ class ImageGalleryType extends AbstractType
     {
         if (!empty($item->value['src'])) {
             Storage::disk('public')->delete($item->value['src']);
+        }
+    }
+
+    /**
+     * @param PeculiarField $newField
+     * @return void
+     * @throws BindingResolutionException
+     */
+    protected function copyDataTo(PeculiarField $newField): void
+    {
+        $filesystem = app()->make(Filesystem::class);
+        foreach ($this->peculiarField->data as $dataItem) {
+            $hash = md5('peculiarFields' . $newField->id);
+
+            // Копируем значение и прикрепляем к новому полю
+            $newDataItem = $dataItem->replicate()
+                ->peculiarField()
+                ->associate($newField)
+            ;
+
+            $newFilePath = self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2)
+                . '/' . $filesystem->basename($newDataItem->value['src']);
+
+            // Копируем файл
+            Storage::disk('public')->copy(
+                $newDataItem->value['src'],
+                $newFilePath
+            );
+
+            $newDataItem->value['src'] = $newFilePath;
+            $newDataItem->save();
         }
     }
 }

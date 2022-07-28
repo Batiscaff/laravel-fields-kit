@@ -105,6 +105,33 @@ class GroupType extends Component
     }
 
     /**
+     * @param int $fieldId
+     * @param PeculiarField $peculiarFieldClass
+     * @return void
+     */
+    public function copyItem(int $fieldId, PeculiarField $peculiarFieldClass): void
+    {
+        if (Auth::user()->can(config('fields-kit.permission.peculiar-field.copy'))) {
+            $field = $peculiarFieldClass::find($fieldId);
+            if ($field) {
+                $field->createCopy();
+
+                $this->emit(config('fields-kit.flash_key'), [
+                    'message' => __('fields-kit::messages.field-copy-created'),
+                    'type' => 'success',
+                ]);
+                $this->emitSelf('itemAdded');
+            }
+
+        } else {
+            $this->emit(config('fields-kit.flash_key'), [
+                'message' => __('fields-kit::messages.copy-item-denied'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
+    /**
      * @param array $keys
      * @return void
      */

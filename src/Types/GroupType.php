@@ -2,6 +2,8 @@
 
 namespace Batiscaff\FieldsKit\Types;
 
+use Batiscaff\FieldsKit\Contracts\PeculiarField;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
@@ -85,5 +87,21 @@ class GroupType extends AbstractType
     public function setSettings(Collection $settings): void
     {
         $this->peculiarField->settings = $settings;
+    }
+
+    /**
+     * @param Model|null $newModel
+     * @return PeculiarField
+     */
+    public function createCopy(?Model $newModel = null): PeculiarField
+    {
+        $newField = parent::createCopy($newModel);
+
+        // Копируем дочерние поля
+        foreach ($this->peculiarField->peculiarFields as $child) {
+            $child->createCopy($newField);
+        }
+
+        return $newField;
     }
 }

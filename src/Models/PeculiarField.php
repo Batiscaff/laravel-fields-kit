@@ -34,7 +34,7 @@ use Illuminate\Translation\Translator;
  * @property-read Model $model
  * @property-read string $typeAsString
  * @property-read AbstractType $typeInstance
- * @property-read DbCollection $peculiarFields
+ * @property-read DbCollection|PeculiarFieldContract[] $peculiarFields
  */
 class PeculiarField extends Model implements PeculiarFieldContract
 {
@@ -47,6 +47,19 @@ class PeculiarField extends Model implements PeculiarFieldContract
     protected $casts = [
         'settings' => AsCollection::class,
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected static function booted()
+    {
+        static::deleted(function($deletedField) {
+            // При удалении поля удаляем все дочерние поля
+            foreach ($deletedField->peculiarFields as $child) {
+                $child->delete();
+            }
+        });
+    }
 
     /**
      * @return MorphTo
@@ -156,5 +169,14 @@ class PeculiarField extends Model implements PeculiarFieldContract
         } else {
             return method_exists($model, 'backwardLink') ? $model->backwardLink() : '';
         }
+    }
+
+    /**
+     * @param Model|null $newModel
+     * @return PeculiarFieldContract
+     */
+    public function createCopy(?Model $newModel = null): PeculiarFieldContract
+    {
+        return $this->typeInstance->createCopy($newModel);
     }
 }

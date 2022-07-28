@@ -62,6 +62,12 @@ if ($currentField->getSettings('group-type') === \Batiscaff\FieldsKit\Types\Grou
                                     {{ __('fields-kit::section.edit') }}
                                 </a>
                             @endcan
+                            @can(config('fields-kit.permission.peculiar-field.copy'))
+                                <button wire:click="copyItem({{ $item->id }})" class="btn btn-secondary btn-sm">
+                                    <span class="fas fa-copy"></span>
+                                    {{ __('fields-kit::section.copy') }}
+                                </button>
+                            @endcan
                             @can(config('fields-kit.permission.peculiar-field.delete'))
                                 <button wire:click="askToDelete({{ $item->id }})" class="btn btn-danger btn-sm">
                                     <span class="fas fa-trash"></span>

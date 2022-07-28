@@ -52,6 +52,12 @@
                                         {{ __('fields-kit::section.edit') }}
                                     </a>
                                 @endcan
+                                @can(config('fields-kit.permission.peculiar-field.copy'))
+                                    <button wire:click="pfCopy({{ $field->id }})" class="btn btn-secondary btn-sm">
+                                        <span class="fas fa-copy"></span>
+                                        {{ __('fields-kit::section.copy') }}
+                                    </button>
+                                @endcan
                                 @can(config('fields-kit.permission.peculiar-field.delete'))
                                     <button wire:click="pfAskToDelete({{ $field->id }})" class="btn btn-danger btn-sm">
                                         <span class="fas fa-trash"></span>
