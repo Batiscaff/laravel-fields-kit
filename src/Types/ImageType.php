@@ -128,24 +128,27 @@ class ImageType extends AbstractType
     {
         $filesystem = app()->make(Filesystem::class);
         $dataItem = $this->peculiarField->data()->first();
-        $hash = md5('peculiarFields' . $newField->id);
 
-        // Копируем значение и прикрепляем к новому полю
-        $newDataItem = $dataItem->replicate()
-            ->peculiarField()
-            ->associate($newField)
-        ;
+        if ($dataItem) {
+            $hash = md5('peculiarFields' . $newField->id);
 
-        $newFilePath = self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2)
-            . '/' . $filesystem->basename($newDataItem->value['src']);
+            // Копируем значение и прикрепляем к новому полю
+            $newDataItem = $dataItem->replicate()
+                ->peculiarField()
+                ->associate($newField)
+            ;
 
-        // Копируем файл
-        Storage::disk('public')->copy(
-            $newDataItem->value['src'],
-            $newFilePath
-        );
+            $newFilePath = self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2)
+                . '/' . $filesystem->basename($newDataItem->value['src']);
 
-        $newDataItem->value['src'] = $newFilePath;
-        $newDataItem->save();
+            // Копируем файл
+            Storage::disk('public')->copy(
+                $newDataItem->value['src'],
+                $newFilePath
+            );
+
+            $newDataItem->value['src'] = $newFilePath;
+            $newDataItem->save();
+        }
     }
 }
