@@ -133,24 +133,31 @@ abstract class AbstractType
     {
         $peculiarFieldClass = app(PeculiarField::class);
 
+        // Т.к. в плоских списках name не используется, то в этом случае ориентируемся на title
+        $attr = $this->peculiarField->name ? 'name' : 'title';
+
         // Подбираем новое имя, избегая дублирования в рамках текущей или новой модели
         $num = -1;
         do {
             $num++;
-            $name = $this->peculiarField->name;
+            $str = $this->peculiarField->{$attr};
             if ($num > 0) {
-                $name .= "_copy_{$num}";
+                $str .= ($attr === 'name') ? "_copy_{$num}" : __('fields-kit::section.copy-title', ['num' => $num]);
             }
 
             $exists = $peculiarFieldClass::whereMorphedTo('model', $newModel)
-                ->where('name', '=', $name)
+                ->where($attr, '=', $str)
                 ->exists()
             ;
         } while ($exists);
 
         $title = $this->peculiarField->title;
+        $name  = $this->peculiarField->name;
         if ($num > 0) {
             $title .= __('fields-kit::section.copy-title', ['num' => $num]);
+            if ($name) {
+                $name .= "_copy_{$num}";
+            }
         }
 
         return [$name, $title];
