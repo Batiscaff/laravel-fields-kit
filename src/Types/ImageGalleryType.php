@@ -53,13 +53,19 @@ class ImageGalleryType extends AbstractType
     function setValue(mixed $value): void
     {
         $data = $this->peculiarField->data ?? [];
-        $cnt = max(count($data), count($value));
-
+        $cnt  = max(count($data), count($value));
         $hash = md5('peculiarFields' . $this->peculiarField->id);
+
+        $counted = (new Collection($data))->countBy(function ($item) {
+            return $item?->value['src'];
+        })->all();
 
         for ($i=0; $i < $cnt; $i++) {
             if (!isset($value[$i]) || self::isEmptyImagesList($value[$i])) {
-                $data[$i]->delete();
+                self::counterInc($counted, $data[$i]->value['src'], -1);
+                app(PeculiarFieldData::class)::withoutEvents(function () use ($data, $i) {
+                    $data[$i]->delete();
+                });
             } else {
                 if (empty($value[$i])) {
                     continue;
@@ -79,14 +85,19 @@ class ImageGalleryType extends AbstractType
 
                 if ($value[$i] instanceof TemporaryUploadedFile) {
                     if ($dbValue) {
-                        Storage::disk('public')->delete($dbValue['src']);
+                        self::counterInc($counted, $dbValue['src'], -1);
                     }
 
                     $filePath = $value[$i]->store(self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2), 'public');
+                    self::counterInc($counted, $filePath);
                 } elseif (!empty($value[$i])) {
                     $filePath = $value[$i]['src'];
+                    if (!$dbValue || $filePath != $dbValue['src']) {
+                        self::counterInc($counted, $filePath);
+                        self::counterInc($counted, $dbValue['src'] ?? null, -1);
+                    }
                 } elseif($data[$i]) {
-                    Storage::disk('public')->delete($data[$i]['src']);
+                    self::counterInc($counted, $data[$i]['src'], -1);
                     $filePath = null;
                 } else {
                     return;
@@ -94,6 +105,12 @@ class ImageGalleryType extends AbstractType
 
                 $valueItem->value = ['src' => $filePath];
                 $valueItem->save();
+            }
+        }
+
+        foreach ($counted as $path => $count) {
+            if (!$count) {
+                Storage::disk('public')->delete($path);
             }
         }
     }
@@ -189,5 +206,24 @@ class ImageGalleryType extends AbstractType
             $newDataItem->value['src'] = $newFilePath;
             $newDataItem->save();
         }
+    }
+
+    /**
+     * @param Collection|array $counter
+     * @param mixed $key
+     * @param int|null $value
+     * @return void
+     */
+    protected static function counterInc(Collection|array &$counter, mixed $key, ?int $value = 1): void
+    {
+        if (is_null($key)) {
+            return;
+        }
+
+        if (!isset($counter[$key])) {
+            $counter[$key] = 0;
+        }
+
+        $counter[$key] += $value;
     }
 }
