@@ -4,21 +4,14 @@ namespace Batiscaff\FieldsKit\Http\Livewire\Types;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Collection;
-use Livewire\Component;
 
 /**
  * Class ListType.
  * @package Batiscaff\FieldsKit\Http\Livewire\Types
  */
-class ListType extends Component
+class ListType extends AbstractType
 {
-    public PeculiarField $currentField;
-
-    public Collection $value;
-    public Collection $settings;
-
-    protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted'];
+    protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted', 'setCurrentLanguage'];
 
     /**
      * @param PeculiarField $currentField
@@ -26,9 +19,7 @@ class ListType extends Component
      */
     public function mount(PeculiarField $currentField): void
     {
-        $this->currentField = $currentField;
-        $this->value        = $currentField->getValue();
-        $this->settings     = $currentField->settings;
+        parent::mount($currentField);
 
         if (!$currentField->getSettings('list-type')) {
             $this->settings['list-type'] = \Batiscaff\FieldsKit\Types\ListType::LIST_TYPE_COMMON;
@@ -41,14 +32,6 @@ class ListType extends Component
     public function render(): View
     {
         return view('fields-kit::types.list-type');
-    }
-
-    /**
-     * @return void
-     */
-    public function save(): void
-    {
-        $this->currentField->setValue($this->value);
     }
 
     public function reRenderFieldData()
@@ -76,9 +59,9 @@ class ListType extends Component
     public function removeItem(int $key): void
     {
         if (count($this->value) > 1) {
-            $this->value = $this->value->forget($key)->values();
+            $this->value = collect($this->value)->forget($key)->values();
         } else {
-            $this->value = $this->value->map(function ($item) {
+            $this->value = collect($this->value)->map(function ($item) {
                 data_set($item, '*', '');
                 return $item;
             });
@@ -93,7 +76,7 @@ class ListType extends Component
     {
         $keys = array_flip($keys);
 
-        $this->value = $this->value->sortBy(function ($val, $key) use ($keys) {
+        $this->value = collect($this->value)->sortBy(function ($val, $key) use ($keys) {
             return $keys[$key];
         })->values();
     }

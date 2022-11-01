@@ -30,4 +30,12 @@ return [
         ]
     ],
     'flash_key' => 'fields-kit-flash',
+    'multilingual' => [
+        'enabled' => true,
+        'default_language' => 'ru',
+        'languages' => [
+            'ru' => ['title' => 'Русский', 'flag' => '/i/flags/ru.svg'],
+            'en' => ['title' => 'English', 'flag' => '/i/flags/us.svg'],
+        ],
+    ]
 ];

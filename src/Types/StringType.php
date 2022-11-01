@@ -25,7 +25,9 @@ class StringType extends AbstractType
      */
     public function getValue(): string
     {
-        return $this->peculiarField->data[0]?->value['value'] ?? '';
+        $value = $this->getRawValue();
+
+        return isset($value['value']) ?? '';
     }
 
     /**
@@ -33,7 +35,13 @@ class StringType extends AbstractType
      */
     public function getShortValue(): string
     {
-        return Str::limit(htmlspecialchars($this->getValue()), 50);
+        if (isFieldsKitMultilingualEnabled()) {
+            $value = $this->getMLValue();
+        } else {
+            $value = $this->getValue();
+        }
+
+        return Str::limit(htmlspecialchars($value), 50);
     }
 
     /**
@@ -44,6 +52,18 @@ class StringType extends AbstractType
     {
         $data = $this->peculiarField->data[0] ?? App::make(config('fields-kit.models.peculiar_fields_data'));
         $data->value['value'] = $value;
+
+        $this->peculiarField->data()->save($data);
+    }
+
+    /**
+     * @param array $value
+     * @return void
+     */
+    function setMLValue(array $value): void
+    {
+        $data = $this->peculiarField->data[0] ?? App::make(config('fields-kit.models.peculiar_fields_data'));
+        $data->value = $value;
 
         $this->peculiarField->data()->save($data);
     }
@@ -67,5 +87,13 @@ class StringType extends AbstractType
         }
 
         $this->peculiarField->settings = $settings;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmptyValue(): mixed
+    {
+        return '';
     }
 }

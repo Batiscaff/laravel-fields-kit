@@ -39,7 +39,11 @@ class ImageType extends AbstractType
      */
     public function getShortValue(): string
     {
-        $image = $this->getValue();
+        if (isFieldsKitMultilingualEnabled()) {
+            $image = $this->getMLValue();
+        } else {
+            $image = $this->getValue();
+        }
 
         return $image ? trans_choice('fields-kit::section.images-count', 1, ['count' => 1])
             : __('fields-kit::section.no-value');
@@ -106,6 +110,28 @@ class ImageType extends AbstractType
     public function setSettings(Collection $settings): void
     {
         $this->peculiarField->settings = $settings;
+    }
+
+    /**
+     * @param bool|null $isReverse
+     * @return void
+     */
+    public function convertDataToMultilingual(?bool $isReverse = false): void
+    {
+        $defaultLang = $this->getDefaultLanguage();
+        foreach ($this->peculiarField->data as $data) {
+            if ($isReverse) {
+                if (isset($data->value[$defaultLang])) {
+                    $data->value = $data->value[$defaultLang];
+                }
+            } else {
+                if (!isset($data->value[$defaultLang])) {
+                    $data->value = [$defaultLang => $data->value];
+                }
+            }
+
+            $data->save();
+        }
     }
 
     /**

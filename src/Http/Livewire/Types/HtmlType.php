@@ -2,31 +2,17 @@
 
 namespace Batiscaff\FieldsKit\Http\Livewire\Types;
 
-use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Illuminate\Contracts\View\View;
-use Livewire\Component;
 
 /**
  * Class HtmlType.
  * @package Batiscaff\FieldsKit\Http\Livewire\Types
  */
-class HtmlType extends Component
+class HtmlType extends AbstractType
 {
-    public PeculiarField $currentField;
+    public mixed $value = '';
 
-    public string $value = '';
-
-    protected $listeners = ['save', 'refreshComponent' => '$refresh'];
-
-    /**
-     * @param PeculiarField $currentField
-     * @return void
-     */
-    public function mount(PeculiarField $currentField): void
-    {
-        $this->currentField = $currentField;
-        $this->value        = $currentField->getValue();
-    }
+    protected $listeners = ['save', 'refreshComponent' => '$refresh', 'setCurrentLanguage'];
 
     /**
      * @return View
@@ -34,13 +20,5 @@ class HtmlType extends Component
     public function render(): View
     {
         return view('fields-kit::types.html-type');
-    }
-
-    /**
-     * @return void
-     */
-    public function save(): void
-    {
-        $this->currentField->setValue($this->value);
     }
 }

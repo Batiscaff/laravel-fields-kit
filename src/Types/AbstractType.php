@@ -34,6 +34,15 @@ abstract class AbstractType
     abstract public function setValue(mixed $value): void;
 
     /**
+     * @param array $value
+     * @return void
+     */
+    public function setMLValue(array $value): void
+    {
+
+    }
+
+    /**
      * @return Collection
      */
     abstract public function getSettings(): Collection;
@@ -55,6 +64,63 @@ abstract class AbstractType
     public function getJson(): mixed
     {
         return $this->getValue();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRawValue(): mixed
+    {
+        $data = $this->peculiarField->data;
+        return isset($data[0]) ? $data[0]->value : null;
+    }
+
+    /**
+     * @param string|null $lang
+     * @return mixed
+     */
+    public function getMLValue(?string $lang = null): mixed
+    {
+        if (empty($lang)) {
+            $lang = config('fields-kit.multilingual.default_language', 'ru');
+        }
+
+        $value = $this->getRawValue();
+        if (isset($value[$lang])) {
+            return $value[$lang];
+        }
+
+        return $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmptyValue(): mixed
+    {
+        return null;
+    }
+
+    /**
+     * @param bool|null $isReverse
+     * @return void
+     */
+    public function convertDataToMultilingual(?bool $isReverse = false): void
+    {
+        $defaultLang = $this->getDefaultLanguage();
+        foreach ($this->peculiarField->data as $data) {
+            if ($isReverse) {
+                if (isset($data->value[$defaultLang])) {
+                    $data->value = ['value' => $data->value[$defaultLang]];
+                }
+            } else {
+                if (isset($data->value['value'])) {
+                    $data->value = [$defaultLang => $data->value['value']];
+                }
+            }
+
+            $data->save();
+        }
     }
 
     /**
@@ -161,5 +227,13 @@ abstract class AbstractType
         }
 
         return [$name, $title];
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultLanguage(): string
+    {
+        return config('fields-kit.multilingual.default_language', 'ru');
     }
 }

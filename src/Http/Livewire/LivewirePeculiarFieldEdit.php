@@ -3,6 +3,7 @@
 namespace Batiscaff\FieldsKit\Http\Livewire;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField;
+use Batiscaff\FieldsKit\Traits\Multilingual;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -16,6 +17,8 @@ use Livewire\Component;
  */
 class LivewirePeculiarFieldEdit extends Component
 {
+    use Multilingual;
+
     public PeculiarField $currentField;
 
     public string $type = '';
@@ -30,6 +33,16 @@ class LivewirePeculiarFieldEdit extends Component
     public Collection $settings;
 
     protected $listeners = ['refreshComponent' => '$refresh', 'columnsIsSorted', 'reRenderFieldData'];
+
+    /**
+     * @param string|null $id
+     */
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+
+//        $this->multilingualInit();
+    }
 
     /**
      * @param PeculiarField $currentField

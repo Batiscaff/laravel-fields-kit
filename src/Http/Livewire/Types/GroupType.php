@@ -4,20 +4,15 @@ namespace Batiscaff\FieldsKit\Http\Livewire\Types;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
 
 /**
  * Class GroupType.
  * @package Batiscaff\FieldsKit\Http\Livewire\Types
  */
-class GroupType extends Component
+class GroupType extends AbstractType
 {
     public PeculiarField $currentField;
-
-    public Collection $value;
-    public Collection $settings;
 
     public ?int $idForDelete = null;
     public bool $isDeleteConfirmModalOpen = false;
@@ -34,8 +29,8 @@ class GroupType extends Component
     public function mount(PeculiarField $currentField): void
     {
         $this->currentField = $currentField;
-        $this->value        = $currentField->getValue();
         $this->settings     = $currentField->settings;
+        $this->value        = $currentField->getValue();
 
         if (!$currentField->getSettings('group-type')) {
             $this->settings['group-type'] = \Batiscaff\FieldsKit\Types\GroupType::GROUP_TYPE_COMMON;

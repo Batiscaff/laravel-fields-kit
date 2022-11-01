@@ -2,7 +2,7 @@
     {{ __('fields-kit::edit.title') }}
 </x-slot>
 
-<section id="peculiar-field-form">
+<section id="peculiar-field-form">111
     <div class="row">
         <div class="col-lg-4 col-12">
             <div class="small-box bg-white">
@@ -31,6 +31,9 @@
                     </a>
                 @endcan
             </div>
+        </div>
+        <div class="col-8">
+            @livewire('peculiar-field-language-switcher')
         </div>
     </div>
     <div class="row">

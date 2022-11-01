@@ -2,10 +2,13 @@
 
 namespace Batiscaff\FieldsKit;
 
+use Batiscaff\FieldsKit\Console\Commands\MultilingualConvert;
 use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Batiscaff\FieldsKit\Contracts\PeculiarFieldData;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldAddButton;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldEdit;
+use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldLanguageFlag;
+use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFieldLanguageSwitcher;
 use Batiscaff\FieldsKit\Http\Livewire\LivewirePeculiarFields;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Filesystem\Filesystem;
@@ -41,6 +44,7 @@ class FieldsKitServiceProvider extends ServiceProvider
         $this->configureRoutes();
         $this->configureLanguages();
         $this->configurePermissions();
+        $this->configureCommands();
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views/livewire', 'fields-kit');
 
@@ -94,6 +98,8 @@ class FieldsKitServiceProvider extends ServiceProvider
         Livewire::component('peculiar-fields', LivewirePeculiarFields::class);
         Livewire::component('peculiar-field-edit', LivewirePeculiarFieldEdit::class);
         Livewire::component('peculiar-field-add-button', LivewirePeculiarFieldAddButton::class);
+        Livewire::component('peculiar-field-language-flag', LivewirePeculiarFieldLanguageFlag::class);
+        Livewire::component('peculiar-field-language-switcher', LivewirePeculiarFieldLanguageSwitcher::class);
 
         foreach (config('fields-kit.types') as $key => $class) {
             if (class_exists($class) && class_exists($class::livewireClass())) {
@@ -140,6 +146,16 @@ class FieldsKitServiceProvider extends ServiceProvider
                 return true;
             });
         }
+    }
+
+    /**
+     * @return void
+     */
+    protected function configureCommands(): void
+    {
+        $this->commands([
+            MultilingualConvert::class,
+        ]);
     }
 
     /**

@@ -1,6 +1,6 @@
 <div class="card card-info">
     <div class="card-header">
-        {{ __('fields-kit::edit.field-content') }}
+        {{ __('fields-kit::edit.field-content') }} @livewire('peculiar-field-language-flag')
     </div>
     <div class="card-body">
         <div class="field-group">

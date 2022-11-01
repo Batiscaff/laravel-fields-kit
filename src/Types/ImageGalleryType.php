@@ -27,11 +27,40 @@ class ImageGalleryType extends AbstractType
     }
 
     /**
+     * @return mixed
+     */
+    public function getRawValue(): mixed
+    {
+        return $this->peculiarField->data()->pluck('value');
+    }
+
+    /**
      * @return Collection
      */
     public function getValue(): Collection
     {
-        return $this->peculiarField->data()->pluck('value');
+        return $this->getRawValue();
+    }
+
+    /**
+     * @param string|null $lang
+     * @return mixed
+     */
+    public function getMLValue(?string $lang = null): mixed
+    {
+        if (empty($lang)) {
+            $lang = config('fields-kit.multilingual.default_language', 'ru');
+        }
+
+        $list = $this->getRawValue();
+        $value = [];
+        foreach ($list as $item) {
+            if (isset($item[$lang])) {
+                $value[] = $item[$lang];
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -39,11 +68,24 @@ class ImageGalleryType extends AbstractType
      */
     public function getShortValue(): string
     {
-        $list = $this->getValue();
+        if (isFieldsKitMultilingualEnabled()) {
+            $list = $this->getMLValue();
+        } else {
+            $list = $this->getValue();
+        }
+
         $cnt = count($list);
 
         return $cnt ? trans_choice('fields-kit::section.images-count', $cnt, ['count' => $cnt])
             : __('fields-kit::section.no-value');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmptyValue(): mixed
+    {
+        return [];
     }
 
     /**
@@ -116,6 +158,15 @@ class ImageGalleryType extends AbstractType
     }
 
     /**
+     * @param array $value
+     * @return void
+     */
+    public function setMLValue(array $value): void
+    {
+
+    }
+
+    /**
      * @return mixed
      */
     public function getJson(): mixed
@@ -145,6 +196,28 @@ class ImageGalleryType extends AbstractType
     public function setSettings(Collection $settings): void
     {
         $this->peculiarField->settings = $settings;
+    }
+
+    /**
+     * @param bool|null $isReverse
+     * @return void
+     */
+    public function convertDataToMultilingual(?bool $isReverse = false): void
+    {
+        $defaultLang = $this->getDefaultLanguage();
+        foreach ($this->peculiarField->data as $data) {
+            if ($isReverse) {
+                if (isset($data->value[$defaultLang])) {
+                    $data->value = $data->value[$defaultLang];
+                }
+            } else {
+                if (!isset($data->value[$defaultLang])) {
+                    $data->value = [$defaultLang => $data->value];
+                }
+            }
+
+            $data->save();
+        }
     }
 
     /**

@@ -32,11 +32,25 @@ class GroupType extends AbstractType
     }
 
     /**
+     * @param string|null $lang
+     * @return mixed
+     */
+    public function getMLValue(?string $lang = null): mixed
+    {
+        return $this->getValue();
+    }
+
+    /**
      * @return string
      */
     public function getShortValue(): string
     {
-        $list = $this->getValue();
+        if (isFieldsKitMultilingualEnabled()) {
+            $list = $this->getMLValue();
+        } else {
+            $list = $this->getValue();
+        }
+
         $cnt = count($list);
 
         return $cnt ? trans_choice('fields-kit::section.fields-count', $cnt, ['count' => $cnt])
@@ -87,6 +101,15 @@ class GroupType extends AbstractType
     public function setSettings(Collection $settings): void
     {
         $this->peculiarField->settings = $settings;
+    }
+
+    /**
+     * @param bool|null $isReverse
+     * @return void
+     */
+    public function convertDataToMultilingual(?bool $isReverse = false): void
+    {
+        // This type does not require conversions.
     }
 
     /**

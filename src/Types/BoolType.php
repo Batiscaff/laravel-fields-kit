@@ -29,11 +29,25 @@ class BoolType extends AbstractType
     }
 
     /**
+     * @return mixed
+     */
+    public function getEmptyValue(): mixed
+    {
+        return '0';
+    }
+
+    /**
      * @return string
      */
     public function getShortValue(): string
     {
-        return $this->getValue() ? __('fields-kit::section.yes') : __('fields-kit::section.no');
+        if (isFieldsKitMultilingualEnabled()) {
+            $value = $this->getMLValue();
+        } else {
+            $value = $this->getValue();
+        }
+
+        return $value ? __('fields-kit::section.yes') : __('fields-kit::section.no');
     }
 
     /**

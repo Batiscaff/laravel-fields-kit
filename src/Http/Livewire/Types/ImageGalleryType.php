@@ -2,38 +2,19 @@
 
 namespace Batiscaff\FieldsKit\Http\Livewire\Types;
 
-use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
 /**
  * Class ImageGalleryType.
  * @package Batiscaff\FieldsKit\Http\Livewire\Types
  */
-class ImageGalleryType extends Component
+class ImageGalleryType extends AbstractType
 {
     use WithFileUploads;
 
-    public PeculiarField $currentField;
-
-    public mixed $value;
-    public Collection $settings;
-
-    protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted'];
-
-    /**
-     * @param PeculiarField $currentField
-     * @return void
-     */
-    public function mount(PeculiarField $currentField): void
-    {
-        $this->currentField = $currentField;
-        $this->value        = $currentField->getValue()->toArray();
-        $this->settings     = $currentField->settings;
-
-    }
+    protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted', 'setCurrentLanguage'];
 
     /**
      * @return View
@@ -48,7 +29,8 @@ class ImageGalleryType extends Component
      */
     public function save(): void
     {
-        $this->currentField->setValue(new Collection($this->value));
+//        $this->currentField->setValue(new Collection($this->value));
+        parent::save();
         $this->reRenderFieldData();
     }
 

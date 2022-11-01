@@ -25,11 +25,48 @@ class ListType extends AbstractType
     }
 
     /**
+     * @return mixed
+     */
+    public function getRawValue(): mixed
+    {
+        return $this->peculiarField->data()->pluck('value');
+    }
+
+    /**
      * @return Collection
      */
     public function getValue(): Collection
     {
-        return $this->peculiarField->data()->pluck('value');
+        return $this->getRawValue();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmptyValue(): mixed
+    {
+        return [];
+    }
+
+    /**
+     * @param string|null $lang
+     * @return mixed
+     */
+    public function getMLValue(?string $lang = null): mixed
+    {
+        if (empty($lang)) {
+            $lang = config('fields-kit.multilingual.default_language', 'ru');
+        }
+
+        $list = $this->getRawValue();
+        $value = [];
+        foreach ($list as $item) {
+            if (isset($item[$lang])) {
+                $value[] = $item[$lang];
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -37,7 +74,12 @@ class ListType extends AbstractType
      */
     public function getShortValue(): string
     {
-        $list = $this->getValue();
+        if (isFieldsKitMultilingualEnabled()) {
+            $list = $this->getMLValue();
+        } else {
+            $list = $this->getValue();
+        }
+
         $cnt = count($list);
 
         return $cnt ? trans_choice('fields-kit::section.items-count', $cnt, ['count' => $cnt])
@@ -65,6 +107,39 @@ class ListType extends AbstractType
                 }
 
                 $valueItem->value = $this->normalizeValue($value[$i]);
+                $valueItem->save();
+            }
+        }
+    }
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    function setMLValue(mixed $value): void
+    {
+        $data = $this->peculiarField->data ?? [];
+        $value = transpose($value);
+
+        $cnt = max(count($data), count($value));
+
+        for ($i=0; $i < $cnt; $i++) {
+            if (!isset($value[$i])) {
+                $data[$i]->delete();
+            } else {
+                if (isset($data[$i])) {
+                    $valueItem = $data[$i];
+                } else {
+                    $valueItem = app(PeculiarFieldData::class);
+                    $valueItem->field_id = $this->peculiarField->id;
+                }
+
+                $normalized = [];
+                foreach ($value[$i] as $lang => $langValue) {
+                    $normalized[$lang] = $this->normalizeValue($langValue);
+                }
+
+                $valueItem->value = $normalized;
                 $valueItem->save();
             }
         }
@@ -115,6 +190,28 @@ class ListType extends AbstractType
 
         $this->peculiarField->settings = $settings;
         $this->normalizeAllValues();
+    }
+
+    /**
+     * @param bool|null $isReverse
+     * @return void
+     */
+    public function convertDataToMultilingual(?bool $isReverse = false): void
+    {
+        $defaultLang = $this->getDefaultLanguage();
+        foreach ($this->peculiarField->data as $data) {
+            if ($isReverse) {
+                if (isset($data->value[$defaultLang])) {
+                    $data->value = $data->value[$defaultLang];
+                }
+            } else {
+                if (!isset($data->value[$defaultLang])) {
+                    $data->value = [$defaultLang => $data->value];
+                }
+            }
+
+            $data->save();
+        }
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Batiscaff\FieldsKit\Models;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField as PeculiarFieldContract;
+use Batiscaff\FieldsKit\Contracts\PeculiarFieldData as PeculiarFieldDataContract;
 use Batiscaff\FieldsKit\Exceptions\FieldTypeNotFound;
 use Batiscaff\FieldsKit\Types\AbstractType;
 use Carbon\Carbon;
@@ -34,6 +35,7 @@ use Illuminate\Translation\Translator;
  * @property-read Model $model
  * @property-read string $typeAsString
  * @property-read AbstractType $typeInstance
+ * @property-read DbCollection|PeculiarFieldDataContract[] $data
  * @property-read DbCollection|PeculiarFieldContract[] $peculiarFields
  */
 class PeculiarField extends Model implements PeculiarFieldContract
@@ -119,6 +121,23 @@ class PeculiarField extends Model implements PeculiarFieldContract
     }
 
     /**
+     * @param string|null $lang
+     * @return mixed
+     */
+    public function getMLValue(?string $lang = null): mixed
+    {
+        return $this->typeInstance->getMLValue($lang);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRawValue(): mixed
+    {
+        return $this->typeInstance->getRawValue();
+    }
+
+    /**
      * @return string
      */
     public function getShortValue(): mixed
@@ -131,12 +150,29 @@ class PeculiarField extends Model implements PeculiarFieldContract
     }
 
     /**
+     * @return mixed
+     */
+    public function getEmptyValue(): mixed
+    {
+        return $this->typeInstance->getEmptyValue();
+    }
+
+    /**
      * @param mixed $value
      * @return void
      */
     public function setValue(mixed $value): void
     {
         $this->typeInstance->setValue($value);
+    }
+
+    /**
+     * @param array $value
+     * @return void
+     */
+    public function setMLValue(array $value): void
+    {
+        $this->typeInstance->setMLValue($value);
     }
 
     /**

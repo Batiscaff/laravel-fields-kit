@@ -2,38 +2,18 @@
 
 namespace Batiscaff\FieldsKit\Http\Livewire\Types;
 
-use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Collection;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
 /**
  * Class ImageType.
  * @package Batiscaff\FieldsKit\Http\Livewire\Types
  */
-class ImageType extends Component
+class ImageType extends AbstractType
 {
     use WithFileUploads;
 
-    public PeculiarField $currentField;
-
-    public $value;
-    public Collection $settings;
-
-    protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted'];
-
-    /**
-     * @param PeculiarField $currentField
-     * @return void
-     */
-    public function mount(PeculiarField $currentField): void
-    {
-        $this->currentField = $currentField;
-        $this->value        = $currentField->getValue();
-        $this->settings     = $currentField->settings;
-
-    }
+    protected $listeners = ['save', 'reRenderFieldData', 'itemsIsSorted', 'setCurrentLanguage'];
 
     /**
      * @return View

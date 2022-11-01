@@ -5,7 +5,7 @@
      x-on:livewire-upload-progress="progress = $event.detail.progress"
 >
     <div class="card-header">
-        {{ __('fields-kit::edit.field-content') }}
+        {{ __('fields-kit::edit.field-content') }} @livewire('peculiar-field-language-flag')
     </div>
     <div class="card-body p-2 position-relative">
         <div class="image-gallery-container row">
