@@ -110,7 +110,7 @@ class ImageGalleryType extends AbstractType
                     self::counterInc($counted, $newValue['src']);
 
                     $webp = Webp::make($value[$i]);
-                    if ($webp) {
+                    if ($webp && $value[$i]->getMimeType() !== 'image/svg+xml') {
                         $webpPath = $path . '/' . pathinfo($newValue['src'], PATHINFO_FILENAME) . '.webp';
                         $webp->save(storage_path('app/public/' . $webpPath));
                         $newValue['srcWebp'] = $webpPath;

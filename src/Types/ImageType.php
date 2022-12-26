@@ -77,7 +77,7 @@ class ImageType extends AbstractType
                 $newValue['src'] = $value->store($path, 'public');
 
                 $webp = Webp::make($value);
-                if ($webp) {
+                if ($webp && $value->getMimeType() !== 'image/svg+xml') {
                     $webpPath = $path . '/' . pathinfo($newValue['src'], PATHINFO_FILENAME) . '.webp';
                     $webp->save(storage_path('app/public/' . $webpPath));
                     $newValue['srcWebp'] = $webpPath;
