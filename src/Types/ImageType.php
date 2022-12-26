@@ -4,6 +4,7 @@ namespace Batiscaff\FieldsKit\Types;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField;
 use Batiscaff\FieldsKit\Contracts\PeculiarFieldData;
+use Buglinjo\LaravelWebp\Facades\Webp;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -52,7 +53,6 @@ class ImageType extends AbstractType
     function setValue(mixed $value): void
     {
         $data = $this->peculiarField->data()->first();
-        $hash = md5('peculiarFields' . $this->peculiarField->id);
 
         if (empty($value)) {
             if (!empty($data)) {
@@ -64,17 +64,30 @@ class ImageType extends AbstractType
                 $data->field_id = $this->peculiarField->id;
             }
 
+            $newValue = [];
+
             if ($value instanceof TemporaryUploadedFile) {
                 if (!$data->value->isEmpty()) {
                     Storage::disk('public')->delete($data->value['src']);
                 }
 
-                $filePath = $value->store(self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2), 'public');
+                $hash = md5('peculiarFields' . $this->peculiarField->id);
+                $path = self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2);
+
+                $newValue['src'] = $value->store($path, 'public');
+
+                $webp = Webp::make($value);
+                if ($webp) {
+                    $webpPath = $path . '/' . pathinfo($newValue['src'], PATHINFO_FILENAME) . '.webp';
+                    $webp->save(storage_path('app/public/' . $webpPath));
+                    $newValue['srcWebp'] = $webpPath;
+                }
+
             } else {
-                $filePath = $value['src'];
+                $newValue = $value;
             }
 
-            $data->value = ['src' => $filePath];
+            $data->value = $newValue;
             $data->save();
         }
     }
@@ -86,6 +99,10 @@ class ImageType extends AbstractType
     {
         $json = $this->getValue();
         $json['src'] = !empty($json['src']) ? Storage::disk('public')->url($json['src']) : null;
+        if (!empty($json['srcWebp'])) {
+            $json['srcWebp'] = Storage::disk('public')->url($json['srcWebp']);
+        }
+
         return $json;
     }
 
@@ -116,6 +133,9 @@ class ImageType extends AbstractType
     {
         if (!empty($item->value['src'])) {
             Storage::disk('public')->delete($item->value['src']);
+            if (!empty($item->value['srcWebp'])) {
+                Storage::disk('public')->delete($item->value['srcWebp']);
+            }
         }
     }
 
@@ -131,6 +151,7 @@ class ImageType extends AbstractType
 
         if ($dataItem) {
             $hash = md5('peculiarFields' . $newField->id);
+            $newPath = self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2);
 
             // Копируем значение и прикрепляем к новому полю
             $newDataItem = $dataItem->replicate()
@@ -138,16 +159,25 @@ class ImageType extends AbstractType
                 ->associate($newField)
             ;
 
-            $newFilePath = self::STORAGE_DIR . '/' . substr($hash, 0, 2) . '/' . substr($hash, 2)
-                . '/' . $filesystem->basename($newDataItem->value['src']);
+            $newValue['src'] = $newPath . '/' . $filesystem->basename($newDataItem->value['src']);
 
             // Копируем файл
             Storage::disk('public')->copy(
                 $newDataItem->value['src'],
-                $newFilePath
+                $newValue['src']
             );
 
-            $newDataItem->value['src'] = $newFilePath;
+            if (!empty($newDataItem->value['srcWebp'])) {
+                $newValue['srcWebp'] = $newPath . '/' . $filesystem->basename($newDataItem->value['srcWebp']);
+
+                // Копируем файл webp
+                Storage::disk('public')->copy(
+                    $newDataItem->value['srcWebp'],
+                    $newValue['srcWebp']
+                );
+            }
+
+            $newDataItem->value = $newValue;
             $newDataItem->save();
         }
     }
