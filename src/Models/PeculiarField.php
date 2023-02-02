@@ -3,6 +3,9 @@
 namespace Batiscaff\FieldsKit\Models;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarField as PeculiarFieldContract;
+use Batiscaff\FieldsKit\Events\PeculiarFieldCreated;
+use Batiscaff\FieldsKit\Events\PeculiarFieldDeleted;
+use Batiscaff\FieldsKit\Events\PeculiarFieldUpdated;
 use Batiscaff\FieldsKit\Exceptions\FieldTypeNotFound;
 use Batiscaff\FieldsKit\Types\AbstractType;
 use Carbon\Carbon;
@@ -53,11 +56,23 @@ class PeculiarField extends Model implements PeculiarFieldContract
      */
     protected static function booted()
     {
+        static::created(function($createdField) {
+            event(new PeculiarFieldCreated($createdField));
+        });
+
+        static::updated(function($updatedField) {
+            event(new PeculiarFieldUpdated($updatedField));
+        });
+
         static::deleted(function($deletedField) {
             // При удалении поля удаляем все дочерние поля
-            foreach ($deletedField->peculiarFields as $child) {
-                $child->delete();
-            }
+            self::withoutEvents(function() use ($deletedField) {
+                foreach ($deletedField->peculiarFields as $child) {
+                    $child->delete();
+                }
+            });
+
+            event(new PeculiarFieldDeleted($deletedField));
         });
     }
 

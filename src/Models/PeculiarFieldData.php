@@ -3,6 +3,7 @@
 namespace Batiscaff\FieldsKit\Models;
 
 use Batiscaff\FieldsKit\Contracts\PeculiarFieldData as PeculiarFieldDataContract;
+use Batiscaff\FieldsKit\Events\PeculiarFieldUpdated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
@@ -48,12 +49,22 @@ class PeculiarFieldData extends Model implements PeculiarFieldDataContract
     {
         parent::boot();
 
+        static::created(function($createdField) {
+            event(new PeculiarFieldUpdated($createdField->peculiarField));
+        });
+
+        static::updated(function($updatedField) {
+            event(new PeculiarFieldUpdated($updatedField->peculiarField));
+        });
+
         static::deleted(function ($item) {
             $typeInstance = $item->peculiarField->typeInstance;
 
             if (method_exists($typeInstance, 'afterDeleteItem')) {
                 $typeInstance->afterDeleteItem($item);
             }
+
+            event(new PeculiarFieldUpdated($item->peculiarField));
         });
     }
 
